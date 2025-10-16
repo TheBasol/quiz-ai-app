@@ -1,5 +1,6 @@
 import { Quiz } from "@/interfaces";
-import { getDifficultyColor } from "@/utils";
+import { createSlug, getDifficultyColor } from "@/utils";
+import Link from "next/link";
 
 interface QuizCardProps {
   quizItem: Quiz;
@@ -42,9 +43,11 @@ export const QuizCard = ({ quizItem }: QuizCardProps) => {
                     {quizItem.questions.length} questions
                   </div>
                   
-                  <button className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-purple-500/25">
+
+                  <Link href={`/questions/${createSlug(quizItem.name)}-${quizItem.id}`}
+                    className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-purple-500/25">
                     Start Quiz
-                  </button>
+                  </Link>
                 </div>
             </div>        
         </>
