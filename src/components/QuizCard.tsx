@@ -11,7 +11,7 @@ export const QuizCard = ({ quizItem }: QuizCardProps) => {
     return (
         <>
             {/* Card Header with Color */}
-            <div className={`${quizItem.color} h-32 relative overflow-hidden`}>
+            <div className="bg-blue-600 h-32 relative overflow-hidden">
               <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
               <div className="absolute bottom-4 left-4">
                 <span className="inline-block bg-black bg-opacity-70 text-white text-xs font-semibold px-3 py-1 rounded-full">

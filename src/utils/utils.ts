@@ -1,36 +1,4 @@
-const HEADER_COLORS: string[] = [
-  'bg-gradient-to-br from-purple-600 to-purple-800',
-  'bg-gradient-to-br from-blue-600 to-blue-800',
-  'bg-gradient-to-br from-indigo-600 to-indigo-800',
-  'bg-gradient-to-br from-violet-600 to-violet-800',
-  'bg-gradient-to-br from-cyan-600 to-cyan-800',
-  'bg-gradient-to-br from-teal-600 to-teal-800',
-  'bg-gradient-to-br from-emerald-600 to-emerald-800',
-  'bg-gradient-to-br from-green-600 to-green-800',
-  'bg-gradient-to-br from-rose-600 to-rose-800',
-  'bg-gradient-to-br from-pink-600 to-pink-800',
-  'bg-gradient-to-br from-fuchsia-600 to-fuchsia-800',
-  'bg-gradient-to-br from-slate-600 to-slate-800',
-];
-
-export const getHeaderColorById = (id?: string | number): string => {
-  let index: number;
-
-  // Si se proporciona un ID, genera un índice consistente.
-  if (id !== null && id !== undefined) {
-    const idAsString = id.toString();
-    let hash = 0;
-    for (let i = 0; i < idAsString.length; i++) {
-      hash += idAsString.charCodeAt(i);
-    }
-    index = hash % HEADER_COLORS.length;
-  } else {
-    // Si no hay ID, elige un índice aleatorio como alternativa.
-    index = Math.floor(Math.random() * HEADER_COLORS.length);
-  }
-
-  return HEADER_COLORS[index];
-};
+import { Question } from "@/interfaces";
 
 export const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -55,3 +23,46 @@ export const getIdFromSlug = (slug: string) => {
     const name = nameSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
     return { actualId, name };
 }
+
+
+export const getAnswerStyles = (option: string, showResult: boolean, currentSelectedAnswer: string, hoveredAnswer: string,currentQuestion: Question ) => {
+    const baseStyles = "w-full text-left p-3 sm:p-4 rounded-lg border-2 transition-all duration-200 font-medium text-sm sm:text-base";
+    
+    if (showResult) {
+      if (option === currentQuestion.answer) {
+        return `${baseStyles} bg-green-600/20 border-green-500 text-green-300`;
+      } else if (currentSelectedAnswer === option && option !== currentQuestion.answer) {
+        return `${baseStyles} bg-red-600/20 border-red-500 text-red-300`;
+      } else {
+        return `${baseStyles} bg-gray-800 border-gray-600 text-gray-400`;
+      }
+    }
+    
+    if (currentSelectedAnswer === option) {
+      return `${baseStyles} bg-purple-600/30 border-purple-500 text-purple-300 shadow-lg shadow-purple-500/25`;
+    }
+    
+    if (hoveredAnswer === option) {
+      return `${baseStyles} bg-gray-700 border-gray-500 text-white hover:scale-[1.02] shadow-lg`;
+    }
+    
+    return `${baseStyles} bg-gray-800 border-gray-600 text-gray-300 hover:bg-gray-700 hover:border-gray-500 hover:text-white hover:scale-[1.02] hover:shadow-lg`;
+  };
+
+export const getResultColor = (percentage: number) => {
+    if (percentage >= 80) return 'text-green-400';
+    if (percentage >= 60) return 'text-yellow-400';
+    return 'text-red-400';
+  };
+
+export const getResultMessage = (percentage: number) => {
+    if (percentage >= 80) return 'Excellent work!';
+    if (percentage >= 60) return 'Good job!';
+    return 'Keep practicing!';
+  };
+
+export const getResultGradient = (percentage: number) => {
+    if (percentage >= 80) return 'from-green-600 to-emerald-700';
+    if (percentage >= 60) return 'from-yellow-600 to-orange-700';
+    return 'from-red-600 to-rose-700';
+  };

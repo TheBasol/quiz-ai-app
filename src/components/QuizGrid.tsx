@@ -1,4 +1,4 @@
-import { availableQuizzes,quiz } from "@/data/questions";
+import { quiz } from "@/data/questions";
 import { QuizCard } from "./QuizCard";
 
 

@@ -4,6 +4,7 @@ export const quiz = [
       id: 1,
       name: "Animal Knowledge Quiz",
       description: "Test your knowledge about the animal kingdom",
+      timeLimit: { hours: 0, minutes: 10 },
       questions: [
     {
       "id": 1,
@@ -49,64 +50,6 @@ export const quiz = [
     }
         ],
       difficulty: "Medium" as const,
-      category: "Nature",
-      color: "bg-green-600"
+      category: "Nature"
     },
 ]
-
-export const availableQuizzes = [
-    {
-      id: 1,
-      name: "Animal Knowledge Quiz",
-      description: "Test your knowledge about the animal kingdom",
-      questionCount: 10,
-      difficulty: "Medium",
-      category: "Nature",
-      color: "bg-green-600"
-    },
-    {
-      id: 2,
-      name: "Science & Technology",
-      description: "Explore the world of science and modern technology",
-      questionCount: 10,
-      difficulty: "Hard",
-      category: "Science",
-      color: "bg-blue-600"
-    },
-    {
-      id: 3,
-      name: "History Quiz",
-      description: "Journey through important historical events",
-      questionCount: 8,
-      difficulty: "Medium",
-      category: "History",
-      color: "bg-yellow-600"
-    },
-    {
-      id: 4,
-      name: "Sports Trivia",
-      description: "Test your sports knowledge from around the world",
-      questionCount: 12,
-      difficulty: "Easy",
-      category: "Sports",
-      color: "bg-red-600"
-    },
-    {
-      id: 5,
-      name: "Geography Challenge",
-      description: "Discover countries, capitals, and landmarks",
-      questionCount: 15,
-      difficulty: "Hard",
-      category: "Geography",
-      color: "bg-purple-600"
-    },
-    {
-      id: 6,
-      name: "Movie & Entertainment",
-      description: "From classics to modern hits, test your movie knowledge",
-      questionCount: 9,
-      difficulty: "Easy",
-      category: "Entertainment",
-      color: "bg-pink-600"
-    }
-  ];

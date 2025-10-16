@@ -5,14 +5,19 @@ export interface Question {
   answer: string;
 }
 
+export interface TimeLimit {
+  hours: number;
+  minutes: number;
+}
+
 export interface Quiz {
   id: number;
   name: string;
   description: string;
   questions: Question[];
+  timeLimit: TimeLimit;
   difficulty: 'Easy' | 'Medium' | 'Hard';
   category: string;
-  color: string; // Tailwind color class like 'bg-green-600'
 }
 
 // Para respuestas del usuario
