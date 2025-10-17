@@ -1,5 +1,6 @@
-import { StatCard } from "@/components/StatCard";
+import { StatCard } from "@/components";
 import { getResultColor, getResultGradient, getResultMessage } from "@/utils";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 
 interface Props {
@@ -7,7 +8,11 @@ interface Props {
 }
 
 export default async function ResultsPage({ searchParams }: Props) {
+  
   const params = await searchParams;
+  if (!params.quizId || !params.score || !params.total || !params.timeSpent || !params.percentage) {
+    redirect('/');
+  }
   const quizId = params.quizId as string;
   const score = Number(params.score);
   const total = Number(params.total);

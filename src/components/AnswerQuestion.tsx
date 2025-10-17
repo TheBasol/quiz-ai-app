@@ -1,3 +1,4 @@
+"use client";
 import { Question } from "@/interfaces";
 import { getAnswerStyles } from "@/utils/utils";
 import { useState } from "react";

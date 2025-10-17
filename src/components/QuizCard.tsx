@@ -8,6 +8,8 @@ interface QuizCardProps {
 
 export const QuizCard = ({ quizItem }: QuizCardProps) => {
 
+  console.log('Rendering QuizCard for:', quizItem);
+
     return (
         <>
             {/* Card Header with Color */}

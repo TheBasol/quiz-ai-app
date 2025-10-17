@@ -1,4 +1,4 @@
-import { QuestionCard } from "@/components/QuestionCard";
+import { QuestionCard } from "@/components";
 import { quiz } from "@/data/questions";
 import { getIdFromSlug } from "@/utils";
 import Link from "next/link";
