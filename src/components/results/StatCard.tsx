@@ -1,4 +1,4 @@
-import { SvgIcons } from "./icons/Icons";
+import { SvgIcons } from "../icons/Icons";
 
 interface StatCardProps {
   iconName: keyof typeof SvgIcons;

@@ -1,141 +1,36 @@
-'use client';
+import { Question, Quiz, TimeLimit } from "@/interfaces";
 
-import { useState } from 'react';
-import { Quiz, Question, TimeLimit } from '@/interfaces';
 
-interface ModalAddQuizProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onSave: (quiz: Omit<Quiz, 'id'>) => void;
+interface ModalContentAddProps {
+  quizData: {
+    name: string;
+    description: string;
+    category: string;
+    difficulty: 'Easy' | 'Medium' | 'Hard';
+    timeLimit: TimeLimit;
+  }; 
+  questions: Omit<Question, 'id'>[]; // ✅ Sin 'id' porque aún no se ha guardado
+  currentStep: number;
+  handleQuizDataChange: (field: string, value: any) => void;
+  handleTimeLimitChange: (unit: 'hours' | 'minutes', value: number) => void;
+  handleQuestionChange: (questionIndex: number, field: string, value: any) => void;
+  handleOptionChange: (questionIndex: number, optionIndex: number, value: string) => void;
+  addQuestion: () => void;
+  removeQuestion: (questionIndex: number) => void;
 }
 
-export const ModalAddQuiz = ({ isOpen, onClose, onSave }: ModalAddQuizProps) => {
-  const [quizData, setQuizData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    difficulty: 'Easy' as Quiz['difficulty'],
-    timeLimit: { hours: 0, minutes: 30 } as TimeLimit,
-  });
-
-  const [questions, setQuestions] = useState<Omit<Question, 'id'>[]>([
-    { question: '', options: ['', '', '', ''], answer: '' }
-  ]);
-
-  const [currentStep, setCurrentStep] = useState(1); // 1: Quiz Info, 2: Questions
-
-  if (!isOpen) return null;
-
-  const handleQuizDataChange = (field: string, value: any) => {
-    setQuizData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleTimeLimitChange = (field: 'hours' | 'minutes', value: number) => {
-    setQuizData(prev => ({
-      ...prev,
-      timeLimit: { ...prev.timeLimit, [field]: value }
-    }));
-  };
-
-  const handleQuestionChange = (questionIndex: number, field: string, value: string) => {
-    setQuestions(prev => {
-      const updated = [...prev];
-      if (field === 'question' || field === 'answer') {
-        updated[questionIndex] = { ...updated[questionIndex], [field]: value };
-      }
-      return updated;
-    });
-  };
-
-  const handleOptionChange = (questionIndex: number, optionIndex: number, value: string) => {
-    setQuestions(prev => {
-      const updated = [...prev];
-      const newOptions = [...updated[questionIndex].options];
-      newOptions[optionIndex] = value;
-      updated[questionIndex] = { ...updated[questionIndex], options: newOptions };
-      return updated;
-    });
-  };
-
-  const addQuestion = () => {
-    setQuestions(prev => [...prev, { question: '', options: ['', '', '', ''], answer: '' }]);
-  };
-
-  const removeQuestion = (index: number) => {
-    if (questions.length > 1) {
-      setQuestions(prev => prev.filter((_, i) => i !== index));
-    }
-  };
-
-  const handleSave = () => {
-    // Validación básica
-    if (!quizData.name.trim() || !quizData.description.trim() || !quizData.category.trim()) {
-      alert('Please fill in all quiz information fields');
-      return;
-    }
-
-    if (questions.some(q => !q.question.trim() || q.options.some(opt => !opt.trim()) || !q.answer.trim())) {
-      alert('Please fill in all question fields');
-      return;
-    }
-
-    const questionsWithIds: Question[] = questions.map((q, index) => ({
-      ...q,
-      id: index + 1
-    }));
-
-    const newQuiz: Omit<Quiz, 'id'> = {
-      ...quizData,
-      questions: questionsWithIds
-    };
-
-    onSave(newQuiz);
-    handleClose();
-  };
-
-  const handleClose = () => {
-    // Reset form
-    setQuizData({
-      name: '',
-      description: '',
-      category: '',
-      difficulty: 'Easy',
-      timeLimit: { hours: 0, minutes: 30 },
-    });
-    setQuestions([{ question: '', options: ['', '', '', ''], answer: '' }]);
-    setCurrentStep(1);
-    onClose();
-  };
-
+export const ModalContentAdd = ({
+  quizData,
+  questions,
+  currentStep,
+  handleQuizDataChange,
+  handleTimeLimitChange,
+  handleQuestionChange,
+  handleOptionChange,
+  addQuestion,
+  removeQuestion
+}: ModalContentAddProps) => {
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-gray-800 rounded-xl shadow-2xl border border-gray-700 w-full max-w-4xl max-h-[90vh] overflow-hidden">
-        
-        {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-blue-600 px-6 py-4 flex justify-between items-center">
-          <div>
-            <h2 className="text-xl sm:text-2xl font-bold text-white">Create New Quiz</h2>
-            <p className="text-white/80 text-sm">Step {currentStep} of 2</p>
-          </div>
-          <button
-            onClick={handleClose}
-            className="text-white/80 hover:text-white transition-colors p-2"
-          >
-            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
-
-        {/* Progress Bar */}
-        <div className="bg-gray-700 h-1">
-          <div 
-            className="bg-purple-500 h-1 transition-all duration-300"
-            style={{ width: `${(currentStep / 2) * 100}%` }}
-          />
-        </div>
-
-        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
           
           {/* Step 1: Quiz Information */}
@@ -305,47 +200,6 @@ export const ModalAddQuiz = ({ isOpen, onClose, onSave }: ModalAddQuizProps) => 
               </button>
             </div>
           )}
-        </div>
-
-        {/* Footer */}
-        <div className="bg-gray-700/50 px-6 py-4 flex justify-between items-center">
-          <div className="flex gap-3">
-            {currentStep === 2 && (
-              <button
-                onClick={() => setCurrentStep(1)}
-                className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
-              >
-                Back
-              </button>
-            )}
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={handleClose}
-              className="px-4 py-2 bg-gray-600 hover:bg-gray-500 text-white rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            
-            {currentStep === 1 ? (
-              <button
-                onClick={() => setCurrentStep(2)}
-                className="px-6 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
-              >
-                Next: Add Questions
-              </button>
-            ) : (
-              <button
-                onClick={handleSave}
-                className="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors"
-              >
-                Save Quiz
-              </button>
-            )}
-          </div>
-        </div>
-      </div>
     </div>
   );
 };

@@ -1,13 +1,9 @@
 
 import { ButtonsAddModal } from '@/components/ButtonsAddModal';
-import { QuizGrid } from '@/components/QuizGrid';
+import { QuizGrid } from '@/components/quizzes/QuizGrid';
 
 export default function QuizPage() {
 
-
-
-  //zustand para ekl estado global de quiz
-  //hace run hook para manejar la logica de los botones
   return (
     <div className="min-h-screen bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
