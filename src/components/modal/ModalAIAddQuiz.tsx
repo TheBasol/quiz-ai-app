@@ -16,7 +16,7 @@ export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
     topic: '',
     category: '',
     difficulty: 'Medium' as Quiz['difficulty'],
-    numberOfQuestions: 10,
+    numberOfQuestions: 5,
     timeLimit: { hours: 0, minutes: 30 } as TimeLimit,
     language: 'English',
     focusArea: '',
@@ -63,43 +63,71 @@ export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
     // Simular el proceso de generación con pasos
     const steps = [
       'Analyzing your requirements...',
-      'Researching topic content...',
+      'Connecting to AI models...',
       'Generating questions...',
       'Creating answer options...',
       'Validating quiz structure...',
       'Finalizing your quiz...'
     ];
 
-    for (let i = 0; i < steps.length; i++) {
-      setGenerationStep(steps[i]);
-      await new Promise(resolve => setTimeout(resolve, 1000 + Math.random() * 1000));
+    // Mostrar pasos de simulación mientras esperamos la respuesta real
+    let stepIndex = 0;
+    const stepInterval = setInterval(() => {
+      if (stepIndex < steps.length) {
+        setGenerationStep(steps[stepIndex]);
+        stepIndex++;
+      } else {
+        // Reiniciar el ciclo si la API aún no responde
+        stepIndex = 0;
+      }
+    }, 2000);
+
+    try {
+      // ✅ Llamar a la API real (no simulada)
+      const response = await fetch('/api/get-quiz', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          topic: formData.topic,
+          category: formData.category,
+          difficulty: formData.difficulty,
+          numberOfQuestions: formData.numberOfQuestions,
+          language: formData.language,
+          focusArea: formData.focusArea,
+          additionalInstructions: formData.additionalInstructions
+        })
+      });
+
+      // Detener la simulación de pasos
+      clearInterval(stepInterval);
+
+      const data = await response.json();
+
+      if (data.success) {
+        setGenerationStep('Quiz generated successfully! 🎉');
+        
+        // Pequeña pausa para mostrar el éxito
+        await new Promise(resolve => setTimeout(resolve, 1000));
+
+        data.quiz.timeLimit = formData.timeLimit;
+        addQuiz(data.quiz);
+        handleClose();
+      } else {
+        setGenerationStep('');
+        alert(data.error || 'Failed to generate quiz');
+        setIsGenerating(false);
+      }
+    } catch (error) {
+      // Detener la simulación de pasos en caso de error
+      clearInterval(stepInterval);
+      
+      console.error('Error:', error);
+      setGenerationStep('');
+      alert('Failed to generate quiz. Please try again.');
+      setIsGenerating(false);
     }
-
-    // Simular quiz generado
-    const mockQuestions: Question[] = Array.from({ length: formData.numberOfQuestions }, (_, index) => ({
-      id: index + 1,
-      question: `Sample ${formData.topic} question ${index + 1}: What is the main concept related to ${formData.focusArea || formData.topic}?`,
-      options: [
-        `Correct answer for ${formData.topic}`,
-        `Incorrect option A`,
-        `Incorrect option B`,
-        `Incorrect option C`
-      ],
-      answer: `Correct answer for ${formData.topic}`
-    }));
-
-    const generatedQuiz: Omit<Quiz, 'id'> = {
-      name: `AI Generated: ${formData.topic} Quiz`,
-      description: `A ${formData.difficulty.toLowerCase()} level quiz about ${formData.topic}. ${formData.additionalInstructions ? 'Special focus: ' + formData.additionalInstructions : ''}`,
-      category: formData.category,
-      difficulty: formData.difficulty,
-      timeLimit: formData.timeLimit,
-      questions: mockQuestions
-    };
-
-    addQuiz(generatedQuiz);
-    setIsGenerating(false);
-    handleClose();
   };
 
   const handleClose = () => {
@@ -107,7 +135,7 @@ export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
       topic: '',
       category: '',
       difficulty: 'Medium',
-      numberOfQuestions: 10,
+      numberOfQuestions: 5,
       timeLimit: { hours: 0, minutes: 30 },
       language: 'English',
       focusArea: '',
