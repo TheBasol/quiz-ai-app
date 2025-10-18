@@ -20,7 +20,7 @@ export interface Quiz {
   category: string;
 }
 
-// Para respuestas del usuario
+
 export interface UserAnswer {
   questionId: number;
   selectedAnswer: string;
@@ -28,7 +28,7 @@ export interface UserAnswer {
   timeSpent?: number; // en segundos
 }
 
-// Para resultados del quiz
+
 export interface QuizResult {
   quizId: number;
   userId?: string;
@@ -39,3 +39,14 @@ export interface QuizResult {
   answers: UserAnswer[];
   completedAt: Date;
 }
+
+export interface FormData {
+    topic: string;
+    category: string;
+    difficulty: Quiz['difficulty'];
+    numberOfQuestions: number;
+    timeLimit: TimeLimit;
+    language: string;
+    focusArea: string;
+    additionalInstructions: string;
+};

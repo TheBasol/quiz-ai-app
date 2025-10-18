@@ -9,7 +9,7 @@ interface ModalContentAddProps {
     difficulty: 'Easy' | 'Medium' | 'Hard';
     timeLimit: TimeLimit;
   }; 
-  questions: Omit<Question, 'id'>[]; // ✅ Sin 'id' porque aún no se ha guardado
+  questions: Omit<Question, 'id'>[]; 
   currentStep: number;
   handleQuizDataChange: (field: string, value: any) => void;
   handleTimeLimitChange: (unit: 'hours' | 'minutes', value: number) => void;

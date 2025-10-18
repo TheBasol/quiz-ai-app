@@ -1,8 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { Quiz, Question, TimeLimit } from '@/interfaces';
-import { useQuizActions } from '@/store/quiz-store';
+import { useAiAddQuizEngine } from '@/hooks/useAiAddQuizEngine';
+import { ModalContentAiAdd } from './ModalContentAiAdd';
 
 interface ModalAIAddQuizProps {
   isOpen: boolean;
@@ -10,141 +9,21 @@ interface ModalAIAddQuizProps {
 }
 
 export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
-  const { addQuiz } = useQuizActions();
-  
-  const [formData, setFormData] = useState({
-    topic: '',
-    category: '',
-    difficulty: 'Medium' as Quiz['difficulty'],
-    numberOfQuestions: 5,
-    timeLimit: { hours: 0, minutes: 30 } as TimeLimit,
-    language: 'English',
-    focusArea: '',
-    additionalInstructions: ''
-  });
 
-  const [isGenerating, setIsGenerating] = useState(false);
-  const [generationStep, setGenerationStep] = useState('');
-
-  // Opciones predefinidas
-  const categories = [
-    'Programming', 'Science', 'History', 'Geography', 'Mathematics',
-    'Literature', 'Art', 'Music', 'Sports', 'Technology', 'Business',
-    'Health', 'Psychology', 'Philosophy', 'Languages', 'Other'
-  ];
-
-  const languages = [
-    'English', 'Spanish', 'French', 'German', 'Italian', 
-    'Portuguese', 'Chinese', 'Japanese', 'Korean', 'Russian'
-  ];
-
-  const focusAreas = [
-    'General Knowledge', 'Beginner Fundamentals', 'Advanced Concepts',
-    'Practical Applications', 'Theory & Principles', 'Current Trends',
-    'Historical Context', 'Problem Solving', 'Case Studies', 'Best Practices'
-  ];
+  const {
+    formData,
+    handleInputChange,
+    handleTimeLimitChange,
+    isGenerating,
+    generationStep,
+    simulateAIGeneration,
+    handleClose,
+    categories,
+    languages,
+    focusAreas  
+  } = useAiAddQuizEngine({ onClose, isOpen });
 
   if (!isOpen) return null;
-
-  const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
-  };
-
-  const handleTimeLimitChange = (field: 'hours' | 'minutes', value: number) => {
-    setFormData(prev => ({
-      ...prev,
-      timeLimit: { ...prev.timeLimit, [field]: value }
-    }));
-  };
-
-  const simulateAIGeneration = async () => {
-    setIsGenerating(true);
-    
-    // Simular el proceso de generación con pasos
-    const steps = [
-      'Analyzing your requirements...',
-      'Connecting to AI models...',
-      'Generating questions...',
-      'Creating answer options...',
-      'Validating quiz structure...',
-      'Finalizing your quiz...'
-    ];
-
-    // Mostrar pasos de simulación mientras esperamos la respuesta real
-    let stepIndex = 0;
-    const stepInterval = setInterval(() => {
-      if (stepIndex < steps.length) {
-        setGenerationStep(steps[stepIndex]);
-        stepIndex++;
-      } else {
-        // Reiniciar el ciclo si la API aún no responde
-        stepIndex = 0;
-      }
-    }, 2000);
-
-    try {
-      // ✅ Llamar a la API real (no simulada)
-      const response = await fetch('/api/get-quiz', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          topic: formData.topic,
-          category: formData.category,
-          difficulty: formData.difficulty,
-          numberOfQuestions: formData.numberOfQuestions,
-          language: formData.language,
-          focusArea: formData.focusArea,
-          additionalInstructions: formData.additionalInstructions
-        })
-      });
-
-      // Detener la simulación de pasos
-      clearInterval(stepInterval);
-
-      const data = await response.json();
-
-      if (data.success) {
-        setGenerationStep('Quiz generated successfully! 🎉');
-        
-        // Pequeña pausa para mostrar el éxito
-        await new Promise(resolve => setTimeout(resolve, 1000));
-
-        data.quiz.timeLimit = formData.timeLimit;
-        addQuiz(data.quiz);
-        handleClose();
-      } else {
-        setGenerationStep('');
-        alert(data.error || 'Failed to generate quiz');
-        setIsGenerating(false);
-      }
-    } catch (error) {
-      // Detener la simulación de pasos en caso de error
-      clearInterval(stepInterval);
-      
-      console.error('Error:', error);
-      setGenerationStep('');
-      alert('Failed to generate quiz. Please try again.');
-      setIsGenerating(false);
-    }
-  };
-
-  const handleClose = () => {
-    setFormData({
-      topic: '',
-      category: '',
-      difficulty: 'Medium',
-      numberOfQuestions: 5,
-      timeLimit: { hours: 0, minutes: 30 },
-      language: 'English',
-      focusArea: '',
-      additionalInstructions: ''
-    });
-    setIsGenerating(false);
-    setGenerationStep('');
-    onClose();
-  };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
@@ -175,171 +54,15 @@ export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
-          
-          {!isGenerating ? (
-            <div className="space-y-6">
-              {/* Topic & Category */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-white font-medium mb-2">Topic *</label>
-                  <input
-                    type="text"
-                    value={formData.topic}
-                    onChange={(e) => handleInputChange('topic', e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                    placeholder="e.g., JavaScript, World War II, Quantum Physics"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">Category</label>
-                  <select
-                    value={formData.category}
-                    onChange={(e) => handleInputChange('category', e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                  >
-                    <option value="">Select a category</option>
-                    {categories.map(cat => (
-                      <option key={cat} value={cat}>{cat}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Difficulty & Questions */}
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                <div>
-                  <label className="block text-white font-medium mb-2">Difficulty</label>
-                  <select
-                    value={formData.difficulty}
-                    onChange={(e) => handleInputChange('difficulty', e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                  >
-                    <option value="Easy">Easy</option>
-                    <option value="Medium">Medium</option>
-                    <option value="Hard">Hard</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">Questions</label>
-                  <select
-                    value={formData.numberOfQuestions}
-                    onChange={(e) => handleInputChange('numberOfQuestions', parseInt(e.target.value))}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                  >
-                    {[5, 7].map(num => (
-                      <option key={num} value={num}>{num} questions</option>
-                    ))}
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-white font-medium mb-2">Language</label>
-                  <select
-                    value={formData.language}
-                    onChange={(e) => handleInputChange('language', e.target.value)}
-                    className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                  >
-                    {languages.map(lang => (
-                      <option key={lang} value={lang}>{lang}</option>
-                    ))}
-                  </select>
-                </div>
-              </div>
-
-              {/* Time Limit */}
-              <div>
-                <label className="block text-white font-medium mb-2">Time Limit</label>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <input
-                      type="number"
-                      min="0"
-                      max="23"
-                      value={formData.timeLimit.hours}
-                      onChange={(e) => handleTimeLimitChange('hours', parseInt(e.target.value) || 0)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                      placeholder="Hours"
-                    />
-                  </div>
-                  <div>
-                    <input
-                      type="number"
-                      min="1"
-                      max="59"
-                      value={formData.timeLimit.minutes}
-                      onChange={(e) => handleTimeLimitChange('minutes', parseInt(e.target.value) || 1)}
-                      className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                      placeholder="Minutes"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Focus Area */}
-              <div>
-                <label className="block text-white font-medium mb-2">Focus Area (Optional)</label>
-                <select
-                  value={formData.focusArea}
-                  onChange={(e) => handleInputChange('focusArea', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                >
-                  <option value="">Choose a focus area</option>
-                  {focusAreas.map(area => (
-                    <option key={area} value={area}>{area}</option>
-                  ))}
-                </select>
-              </div>
-
-              {/* Additional Instructions */}
-              <div>
-                <label className="block text-white font-medium mb-2">Additional Instructions (Optional)</label>
-                <textarea
-                  value={formData.additionalInstructions}
-                  onChange={(e) => handleInputChange('additionalInstructions', e.target.value)}
-                  rows={3}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 resize-none"
-                  placeholder="Any specific requirements, style preferences, or areas to emphasize..."
-                />
-              </div>
-
-              {/* AI Suggestion Box */}
-              <div className="bg-indigo-600/10 border border-indigo-500/30 rounded-lg p-4">
-                <div className="flex items-start gap-3">
-                  <svg className="w-5 h-5 text-indigo-400 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                  <div>
-                    <h4 className="text-indigo-300 font-medium mb-1">AI Tip</h4>
-                    <p className="text-gray-300 text-sm">
-                      Be specific about your topic for better results. For example: "React Hooks" instead of just "React", 
-                      or "American Civil War battles" instead of just "History".
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          ) : (
-            /* Generation Progress */
-            <div className="text-center py-12">
-              <div className="w-16 h-16 mx-auto mb-6 relative">
-                <div className="absolute inset-0 border-4 border-indigo-200 rounded-full animate-pulse"></div>
-                <div className="absolute inset-0 border-4 border-transparent border-t-indigo-500 rounded-full animate-spin"></div>
-                <svg className="w-8 h-8 text-indigo-500 absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-white mb-2">Generating Your Quiz</h3>
-              <p className="text-indigo-300 text-lg mb-4">{generationStep}</p>
-              <div className="w-64 mx-auto bg-gray-700 rounded-full h-2">
-                <div className="bg-gradient-to-r from-indigo-500 to-purple-500 h-2 rounded-full animate-pulse"></div>
-              </div>
-              <p className="text-gray-400 text-sm mt-4">This may take a few moments...</p>
-            </div>
-          )}
-        </div>
+        <ModalContentAiAdd 
+        formData={formData} 
+        handleInputChange={handleInputChange} 
+        handleTimeLimitChange={handleTimeLimitChange} 
+        isGenerating={isGenerating} 
+        generationStep={generationStep} 
+        categories={categories} 
+        languages={languages} 
+        focusAreas={focusAreas} />
 
         {/* Footer */}
         {!isGenerating && (
