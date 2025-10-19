@@ -12,16 +12,9 @@ interface QuizGeneratorOptions {
   timeLimit?: { hours: number; minutes: number };
 }
 
-interface QuizGeneratorResponse {
-  success: boolean;
-  quiz?: any;
-  metadata?: any;
-  error?: string;
-  details?: any;
-}
 
 export const quizGeneratorService = () => {
-  const generateQuiz = async (options: QuizGeneratorOptions): Promise<QuizGeneratorResponse> => {
+  const generateQuiz = async (options: QuizGeneratorOptions) => {
     const {
       topic,
       category,

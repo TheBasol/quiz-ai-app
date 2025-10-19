@@ -21,7 +21,7 @@ export const ModalAIAddQuiz = ({ isOpen, onClose }: ModalAIAddQuizProps) => {
     categories,
     languages,
     focusAreas  
-  } = useAiAddQuizEngine({ onClose, isOpen });
+  } = useAiAddQuizEngine({ onClose });
 
   if (!isOpen) return null;
 

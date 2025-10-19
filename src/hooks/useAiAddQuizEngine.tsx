@@ -4,10 +4,9 @@ import { useState } from "react";
 
 interface UseAiAddQuizEngineProps {
   onClose: () => void;
-  isOpen: boolean;
 }
 
-export const useAiAddQuizEngine = ({ onClose, isOpen }: UseAiAddQuizEngineProps) => {
+export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
   const { addQuiz } = useQuizActions();
 
   const [formData, setFormData] = useState({

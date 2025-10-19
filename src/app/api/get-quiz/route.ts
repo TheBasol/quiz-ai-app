@@ -1,5 +1,3 @@
-import openAIClient from '@/config/config';
-import { getSystemPrompt, getUserPrompt, models } from '@/data/prompts';
 import { quizGeneratorService } from '@/services/quizGeneratorService';
 import { NextRequest, NextResponse } from 'next/server';
 import OpenAI from 'openai';
