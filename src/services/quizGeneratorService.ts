@@ -12,6 +12,20 @@ interface QuizGeneratorOptions {
   timeLimit?: { hours: number; minutes: number };
 }
 
+interface ApiQuestion {
+  question: string;
+  options: string[];
+  answer: string;
+}
+
+interface ApiQuizData {
+  name?: string;
+  description?: string;
+  category?: string;
+  difficulty?: 'Easy' | 'Medium' | 'Hard';
+  questions: ApiQuestion[];
+}
+
 
 export const quizGeneratorService = () => {
   const generateQuiz = async (options: QuizGeneratorOptions) => {
@@ -29,17 +43,19 @@ export const quizGeneratorService = () => {
     const maxRetriesPerModel = 3;
     const allErrors: string[] = [];
     
-    const validateQuizResponse = (quizData: any): { isValid: boolean; error?: string } => {
-      if (!quizData.questions || !Array.isArray(quizData.questions)) {
+    const validateQuizResponse = (quizData: unknown): { isValid: boolean; error?: string } => {
+      const data = quizData as ApiQuizData;
+      
+      if (!data.questions || !Array.isArray(data.questions)) {
         return { isValid: false, error: 'Invalid quiz structure - no questions array' };
       }
 
-      if (quizData.questions.length !== numberOfQuestions) {
-        return { isValid: false, error: `Expected ${numberOfQuestions} questions, got ${quizData.questions.length}` };
+      if (data.questions.length !== numberOfQuestions) {
+        return { isValid: false, error: `Expected ${numberOfQuestions} questions, got ${data.questions.length}` };
       }
 
-      for (let i = 0; i < quizData.questions.length; i++) {
-        const question = quizData.questions[i];
+      for (let i = 0; i < data.questions.length; i++) {
+        const question = data.questions[i];
         
         if (!question.question || !question.options || !question.answer) {
           return { isValid: false, error: `Question ${i + 1} is missing required fields` };
@@ -61,7 +77,7 @@ export const quizGeneratorService = () => {
       return { isValid: true };
     };
 
-    const processAIResponse = (rawResponse: string): { success: boolean; data?: any; error?: string } => {
+    const processAIResponse = (rawResponse: string): { success: boolean; data?: ApiQuizData; error?: string } => {
       try {
         let cleanResponse = rawResponse.trim();
         cleanResponse = cleanResponse.replace(/```json\s*/g, '').replace(/```\s*/g, '');
@@ -69,7 +85,7 @@ export const quizGeneratorService = () => {
         const jsonMatch = cleanResponse.match(/\{[\s\S]*\}/);
         const jsonString = jsonMatch ? jsonMatch[0] : cleanResponse;
         
-        const quizData = JSON.parse(jsonString);
+        const quizData = JSON.parse(jsonString) as ApiQuizData;
         
         const validation = validateQuizResponse(quizData);
         if (!validation.isValid) {
@@ -77,7 +93,7 @@ export const quizGeneratorService = () => {
         }
 
         return { success: true, data: quizData };
-      } catch (parseError) {
+      } catch {
         return { success: false, error: 'Failed to parse JSON response' };
       }
     };
@@ -113,7 +129,7 @@ export const quizGeneratorService = () => {
           
           if (result.success && result.data) {
             
-            const questionsWithIds = result.data.questions.map((question: any, index: number) => ({
+            const questionsWithIds = result.data.questions.map((question: ApiQuestion, index: number) => ({
               ...question,
               id: index + 1
             }));
@@ -142,16 +158,20 @@ export const quizGeneratorService = () => {
             allErrors.push(errorMsg);
           }
 
-        } catch (error: any) {
-          const errorMsg = `${model} (attempt ${attempt}): ${error.message}`;
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+          const errorMsg = `${model} (attempt ${attempt}): ${errorMessage}`;
           allErrors.push(errorMsg);
           
-          if (error.status === 429) {
-            await new Promise(resolve => setTimeout(resolve, attempt * 2000));
-          }
-          
-          if (error.status === 401 || error.status === 403) {
-            break;
+          if (error instanceof Error && 'status' in error) {
+            const statusError = error as Error & { status: number };
+            if (statusError.status === 429) {
+              await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+            }
+            
+            if (statusError.status === 401 || statusError.status === 403) {
+              break;
+            }
           }
         }
       }

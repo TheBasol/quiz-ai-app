@@ -1,4 +1,4 @@
-import { Question, Quiz, TimeLimit } from "@/interfaces";
+import { Question, TimeLimit } from "@/interfaces";
 
 
 interface ModalContentAddProps {
@@ -11,9 +11,9 @@ interface ModalContentAddProps {
   }; 
   questions: Omit<Question, 'id'>[]; 
   currentStep: number;
-  handleQuizDataChange: (field: string, value: any) => void;
+  handleQuizDataChange: (field: string, value: string | 'Easy' | 'Medium' | 'Hard') => void;
   handleTimeLimitChange: (unit: 'hours' | 'minutes', value: number) => void;
-  handleQuestionChange: (questionIndex: number, field: string, value: any) => void;
+  handleQuestionChange: (questionIndex: number, field: string, value: string) => void;
   handleOptionChange: (questionIndex: number, optionIndex: number, value: string) => void;
   addQuestion: () => void;
   removeQuestion: (questionIndex: number) => void;

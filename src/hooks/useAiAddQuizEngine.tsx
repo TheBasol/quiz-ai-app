@@ -41,7 +41,7 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
   ];
 
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = (field: string, value: string | number | Quiz['difficulty']) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

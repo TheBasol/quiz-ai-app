@@ -3,7 +3,7 @@ import { GenerationProgress } from './GenerationProgress';
 
 interface ModalContentAiAddProps {
   formData: FormData;
-  handleInputChange: (field: string, value: any) => void;
+  handleInputChange: (field: string, value: string | number | 'Easy' | 'Medium' | 'Hard') => void;
   handleTimeLimitChange: (field: 'hours' | 'minutes', value: number) => void;
   isGenerating: boolean;
   generationStep: string;
@@ -162,8 +162,8 @@ export const ModalContentAiAdd = ({
                   <div>
                     <h4 className="text-indigo-300 font-medium mb-1">AI Tip</h4>
                     <p className="text-gray-300 text-sm">
-                      Be specific about your topic for better results. For example: "React Hooks" instead of just "React", 
-                      or "American Civil War battles" instead of just "History".
+                      Be specific about your topic for better results. For example: &quot;React Hooks&quot; instead of just &quot;React&quot;, 
+                      or &quot;American Civil War battles&quot; instead of just &quot;History&quot;.
                     </p>
                   </div>
                 </div>

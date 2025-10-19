@@ -23,7 +23,7 @@ export const ModalAddQuiz = ({ isOpen, onClose }: ModalAddQuizProps) => {
         removeQuestion,
         handleClose,
         handleSave
-    } = useAddQuizEngine({ onClose, isOpen });;
+    } = useAddQuizEngine({ onClose });
 
     if (!isOpen) return null;
 

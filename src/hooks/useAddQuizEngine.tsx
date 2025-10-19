@@ -4,10 +4,9 @@ import { useState } from "react";
 
 interface UseAddQuizEngineProps {
   onClose: () => void;
-  isOpen: boolean;
 }
 
-export const useAddQuizEngine = ({ onClose, isOpen }: UseAddQuizEngineProps) => {
+export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
   const { addQuiz } = useQuizActions();
   
   const [quizData, setQuizData] = useState({
@@ -24,7 +23,7 @@ export const useAddQuizEngine = ({ onClose, isOpen }: UseAddQuizEngineProps) => 
 
   const [currentStep, setCurrentStep] = useState(1);
 
-  const handleQuizDataChange = (field: string, value: any) => {
+  const handleQuizDataChange = (field: string, value: string | Quiz['difficulty']) => {
     setQuizData(prev => ({ ...prev, [field]: value }));
   };
 
