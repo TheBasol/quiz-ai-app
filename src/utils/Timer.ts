@@ -47,6 +47,9 @@ class Timer {
     if (this.isRunning || this.remainingSeconds <= 0) return;
 
     this.isRunning = true;
+    
+    this.onTick(this.formatTime(this.remainingSeconds));
+    
     this.intervalId = setInterval(() => {
       this.remainingSeconds--;
       

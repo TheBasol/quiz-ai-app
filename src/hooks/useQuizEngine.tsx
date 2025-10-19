@@ -9,7 +9,12 @@ export const useQuizEngine = (quiz: Quiz) => {
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<string>('');
   const [resultsList, setResultsList] = useState<string[]>([]);
-  const [timeQuiz, setTimeQuiz] = useState('00:00:00');
+  const [timeQuiz, setTimeQuiz] = useState(() => {
+    const { hours, minutes } = quiz.timeLimit;
+    const h = hours.toString().padStart(2, '0');
+    const m = minutes.toString().padStart(2, '0');
+    return `${h}:${m}:00`;
+  });
   const [showResult, setShowResult] = useState(false);
   const router = useRouter();
 

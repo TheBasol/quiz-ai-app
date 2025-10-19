@@ -29,7 +29,6 @@ export const quizGeneratorService = () => {
     const maxRetriesPerModel = 3;
     const allErrors: string[] = [];
     
-    // Función para validar la respuesta del quiz
     const validateQuizResponse = (quizData: any): { isValid: boolean; error?: string } => {
       if (!quizData.questions || !Array.isArray(quizData.questions)) {
         return { isValid: false, error: 'Invalid quiz structure - no questions array' };
@@ -62,7 +61,6 @@ export const quizGeneratorService = () => {
       return { isValid: true };
     };
 
-    // Función para procesar una respuesta de AI
     const processAIResponse = (rawResponse: string): { success: boolean; data?: any; error?: string } => {
       try {
         let cleanResponse = rawResponse.trim();
@@ -84,13 +82,9 @@ export const quizGeneratorService = () => {
       }
     };
 
-    // Intentar con cada modelo hasta obtener una respuesta válida
     for (const model of models) {
-      console.log(`🔄 Trying model: ${model}`);
-      
       for (let attempt = 1; attempt <= maxRetriesPerModel; attempt++) {
         try {
-          console.log(`   Attempt ${attempt}/${maxRetriesPerModel}`);
           
           const completion = await openAIClient.chat.completions.create({
             model: model,
@@ -115,12 +109,9 @@ export const quizGeneratorService = () => {
             continue;
           }
 
-          console.log(`   Processing response from ${model}`);
-
           const result = processAIResponse(rawResponse);
           
           if (result.success && result.data) {
-            console.log(`✅ SUCCESS: Valid quiz generated with ${model} on attempt ${attempt}`);
             
             const questionsWithIds = result.data.questions.map((question: any, index: number) => ({
               ...question,
@@ -148,28 +139,22 @@ export const quizGeneratorService = () => {
             };
           } else {
             const errorMsg = `${model} (attempt ${attempt}): ${result.error}`;
-            console.log(`   ❌ Invalid response: ${result.error}`);
             allErrors.push(errorMsg);
           }
 
         } catch (error: any) {
           const errorMsg = `${model} (attempt ${attempt}): ${error.message}`;
-          console.log(`   ❌ API Error: ${error.message}`);
           allErrors.push(errorMsg);
           
           if (error.status === 429) {
-            console.log(`   ⏳ Rate limited, waiting ${attempt * 2} seconds...`);
             await new Promise(resolve => setTimeout(resolve, attempt * 2000));
           }
           
           if (error.status === 401 || error.status === 403) {
-            console.log(`   🚫 Fatal error with ${model}, skipping remaining attempts`);
             break;
           }
         }
       }
-      
-      console.log(`❌ All attempts failed for model: ${model}`);
     }
 
     console.error('🚫 ALL MODELS AND ATTEMPTS FAILED');
