@@ -1,41 +1,102 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+# ============================================================
+# FRONTEND (Next.js)
+# ============================================================
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+/frontend/node_modules
+/frontend/.pnp
+/frontend/.pnp.*
+/frontend/.yarn/*
+!/frontend/.yarn/patches
+!/frontend/.yarn/plugins
+!/frontend/.yarn/releases
+!/frontend/.yarn/versions
 
 # testing
-/coverage
+/frontend/coverage
 
 # next.js
-/.next/
-/out/
+/frontend/.next/
+/frontend/out/
 
 # production
-/build
+/frontend/build
+/frontend/.turbo
 
-# misc
+# typescript
+/frontend/*.tsbuildinfo
+/frontend/next-env.d.ts
+
+# env files (can opt-in for committing if needed)
+/frontend/.env*
+
+# vercel
+/frontend/.vercel
+
+# ============================================================
+# BACKEND (.NET / C#)
+# ============================================================
+
+# Build results
+/backend/bin/
+/backend/obj/
+/backend/.vs/
+/backend/.vscode/
+
+# User-specific files
+/backend/*.rsuser
+/backend/*.suo
+/backend/*.user
+/backend/*.userosscache
+/backend/*.sln.docstates
+
+# Local History for Visual Studio Code
+/backend/.history/
+
+# Visual Studio Code cache/options directory
+/backend/.vscode/
+
+# Rider IDE
+/backend/.idea/
+/backend/**/.idea/
+
+# NuGet
+/backend/NuGet.config
+/backend/*.nupkg
+/backend/*.snupkg
+/backend/.nuget/
+
+# Entity Framework
+/backend/*.db
+/backend/*.db-shm
+/backend/*.db-wal
+
+# ============================================================
+# GENERAL / OS
+# ============================================================
+
+# OS files
 .DS_Store
-*.pem
+Thumbs.db
 
-# debug
+# Editor files
+*.pem
+*.swp
+*.swo
+*~
+
+# Debug logs
 npm-debug.log*
+npm-error.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
-.env*
+# IDE files
+.vscode/
+.idea/
 
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
+# Misc
+.env
+.env.local
+.env.*.local
