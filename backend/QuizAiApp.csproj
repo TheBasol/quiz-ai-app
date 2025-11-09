@@ -11,7 +11,6 @@
       <Folder Include="Dto\QuizResults\" />
       <Folder Include="Dto\User\" />
       <Folder Include="Services\" />
-      <Folder Include="Settings\" />
     </ItemGroup>
 
     <ItemGroup>
