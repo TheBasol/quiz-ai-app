@@ -1,14 +1,15 @@
-services:
-  sql-server-db:
-    image: mcr.microsoft.com/mssql/server:latest
-    container_name: quiz-ai-sql-server
-    environment:
-      - ACCEPT_EULA=Y
-      - SA_PASSWORD=contraseniaSegura123!
-    ports:
-      - "1433:1433"
-    volumes:
-      - mssql-data:/var/opt/mssql
+version: '3.8'
 
-volumes:
-  mssql-data:
+services:
+  quiz_ai_app-db:
+    image: postgres:15.3
+    container_name: quiz_ai_app-db
+    restart: always
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=quiz_ai_app_db  
+    volumes:
+      - ./postgres:/var/lib/postgresql/data

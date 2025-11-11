@@ -70,6 +70,8 @@
 /backend/*.db
 /backend/*.db-shm
 /backend/*.db-wal
+/backend/Migrations/
+/backend/postgres
 
 # ============================================================
 # GENERAL / OS
