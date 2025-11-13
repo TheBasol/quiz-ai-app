@@ -1,5 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using QuizAiApp.Data;
+using QuizAiApp.Entitys;
 
 namespace QuizAiApp.Controller;
 
@@ -15,24 +17,28 @@ public class QuizController: ControllerBase
     }
     
     [HttpGet]
-    public ActionResult<IEnumerable<List<string>>> Get()
+    public async Task<ActionResult<IEnumerable<Quiz>>> Get()
     {
-        return new List<List<string>>
-        {
-            new List<string> {"What is the capital of France?", "Paris", "London", "Berlin", "Madrid", "A"},
-            new List<string> {"What is 2 + 2?", "3", "4", "5", "6", "B"},
-            new List<string> {"What is the largest planet in our solar system?", "Earth", "Mars", "Jupiter", "Saturn", "C"}
-        };
+        var quizzes = await context.Quizzes.ToListAsync();
+        return Ok(quizzes);
     }
     
-    [HttpGet("list")]
-    public ActionResult GetList()
+    [HttpGet("/${id}", Name = "GetById")]
+    public async Task<ActionResult<Quiz>> GetById(int id)
     {
-        return Ok( new List<List<string>>
+        var quiz = await context.Quizzes.FindAsync(id);
+        if (quiz == null)
         {
-            new List<string> {"What is the capital of France?", "Paris", "London", "Berlin", "Madrid", "A"},
-            new List<string> {"What is 2 + 2?", "3", "4", "5", "6", "B"},
-            new List<string> {"What is the largest planet in our solar system?", "Earth", "Mars", "Jupiter", "Saturn", "C"}
-        });
+            return NotFound();
+        }
+        return Ok(quiz);
+    }
+
+    [HttpPost]
+    public async Task<ActionResult<Quiz>> Create(Quiz quiz)
+    {
+        context.Add(quiz);
+        await context.SaveChangesAsync();
+        return CreatedAtAction("GetById", new { id = quiz.Id }, quiz);
     }
 }

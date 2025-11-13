@@ -10,8 +10,7 @@ public class Question
 
     [Required]
     public string QuestionText { get; set; } 
-
-
+    
     public int QuizId { get; set; } 
     
     [ForeignKey("QuizId")]
