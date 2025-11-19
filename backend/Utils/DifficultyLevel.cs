@@ -1,4 +1,4 @@
-namespace QuizAiApp.Utils;
+namespace quiz_ai_app.Utils;
 
 public enum DifficultyLevel
 {

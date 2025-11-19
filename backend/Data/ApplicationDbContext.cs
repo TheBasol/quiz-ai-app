@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using QuizAiApp.Entitys;
+using quiz_ai_app.Entitys;
 
-namespace QuizAiApp.Data;
+namespace quiz_ai_app.Data;
 
 public class ApplicationDbContext : DbContext 
 {

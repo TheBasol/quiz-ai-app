@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using QuizAiApp.Data;
+using quiz_ai_app.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +13,13 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 );
 
 // controllers
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = null;
+        options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+        options.JsonSerializerOptions.Converters.Add(new System.Text.Json.Serialization.JsonStringEnumConverter());
+    });
 
 var app = builder.Build();
 

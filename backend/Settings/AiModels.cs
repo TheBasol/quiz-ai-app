@@ -1,4 +1,4 @@
-namespace QuizAiApp.Settings;
+namespace quiz_ai_app.Settings;
 
 public static class AiModels
 {

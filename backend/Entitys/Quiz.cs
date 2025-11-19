@@ -1,7 +1,7 @@
-using QuizAiApp.Utils;
+using quiz_ai_app.Utils;
 using System.ComponentModel.DataAnnotations;
 
-namespace QuizAiApp.Entitys;
+namespace quiz_ai_app.Entitys;
 
 public class Quiz
 {
@@ -24,5 +24,5 @@ public class Quiz
     [MaxLength(50)]
     public string Category { get; set; }
     
-    public virtual ICollection<Question> Questions { get; set; } = new List<Question>();
+    public virtual List<Question> Questions { get; set; } = new List<Question>();
 }

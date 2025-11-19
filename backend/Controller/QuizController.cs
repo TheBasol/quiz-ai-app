@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using QuizAiApp.Data;
-using QuizAiApp.Entitys;
+using quiz_ai_app.Data;
+using quiz_ai_app.Entitys;
 
-namespace QuizAiApp.Controller;
+namespace quiz_ai_app.Controller;
 
 [ApiController]
 [Route("api/quiz")]
@@ -23,7 +23,7 @@ public class QuizController: ControllerBase
         return Ok(quizzes);
     }
     
-    [HttpGet("/${id}", Name = "GetById")]
+    [HttpGet("{id}", Name = "GetById")]
     public async Task<ActionResult<Quiz>> GetById(int id)
     {
         var quiz = await context.Quizzes.FindAsync(id);
@@ -37,6 +37,11 @@ public class QuizController: ControllerBase
     [HttpPost]
     public async Task<ActionResult<Quiz>> Create(Quiz quiz)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+        
         context.Add(quiz);
         await context.SaveChangesAsync();
         return CreatedAtAction("GetById", new { id = quiz.Id }, quiz);

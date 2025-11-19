@@ -1,7 +1,8 @@
-namespace QuizAiApp.Entitys;
+namespace quiz_ai_app.Entitys;
 
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 public class Question
 {
@@ -14,7 +15,8 @@ public class Question
     public int QuizId { get; set; } 
     
     [ForeignKey("QuizId")]
+    [JsonIgnore]
     public virtual Quiz Quiz { get; set; }
     
-    public virtual ICollection<Option> Options { get; set; } = new List<Option>();
+    public virtual ICollection<Option> Options { get; set; } = [];
 }

@@ -1,6 +1,6 @@
 using System.Text;
 
-namespace QuizAiApp.Utils;
+namespace quiz_ai_app.Utils;
 
 public static class AiPromptGenerator
 {

@@ -56,6 +56,11 @@
 # Visual Studio Code cache/options directory
 /backend/.vscode/
 
+# Settings #
+/backend/appsettings.Development.json
+/backend/appsettings.json
+
+
 # Rider IDE
 /backend/.idea/
 /backend/**/.idea/
