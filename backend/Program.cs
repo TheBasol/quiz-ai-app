@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using quiz_ai_app.Data;
+using quiz_ai_app.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,10 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<ICreateQuiz,CreateQuizOpenRouterService>();
 
 // controllers
 builder.Services.AddControllers()

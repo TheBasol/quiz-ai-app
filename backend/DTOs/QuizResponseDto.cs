@@ -1,0 +1,29 @@
+using quiz_ai_app.Utils;
+
+namespace quiz_ai_app.DTOs;
+
+public class QuizResponseDto
+{
+    public int Id { get; set; }
+    public string Name { get; set; } = string.Empty;
+    public string? Description { get; set; }
+    public string Category { get; set; } = string.Empty;
+    public DifficultyLevel Difficulty { get; set; }
+    public TimeSpan TimeLimit { get; set; }
+    public List<QuestionDto> Questions { get; set; } = new();
+}
+
+public class QuestionDto
+{
+    public int Id { get; set; }
+    public string Text { get; set; } = string.Empty;
+    public List<OptionDto> Options { get; set; } = new();
+}
+
+public class OptionDto
+{
+    public int Id { get; set; }
+    public string Text { get; set; } = string.Empty;
+    public bool IsCorrect { get; set; }
+}
+
