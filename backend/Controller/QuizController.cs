@@ -14,12 +14,12 @@ namespace quiz_ai_app.Controller;
 public class QuizController: ControllerBase
 {
     private readonly ApplicationDbContext _context;
-    private readonly ICreateQuiz _openRouterService;
+    private readonly ICreateQuiz _createQuizService;
     
-    public QuizController(ApplicationDbContext context, ICreateQuiz openAiService)
+    public QuizController(ApplicationDbContext context, ICreateQuiz createQuizService)
     {
         this._context = context;
-        this._openRouterService = openAiService;
+        this._createQuizService = createQuizService;
     }
     
     [HttpGet]
@@ -40,44 +40,6 @@ public class QuizController: ControllerBase
         return Ok(quiz);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<Quiz>> Create(Quiz quiz)
-    {
-        if (!ModelState.IsValid)
-        {
-            return BadRequest(ModelState);
-        }
-        
-        _context.Add(quiz);
-        await _context.SaveChangesAsync();
-        return CreatedAtAction("GetById", new { id = quiz.Id }, quiz);
-    }
-
-    [HttpPost("generate-with-ai")]
-    public async Task<ActionResult<string>> GenerateWithAi(
-        [FromBody] GenerateQuizRequest request)
-    {
-        if (string.IsNullOrWhiteSpace(request?.Topic))
-        {
-            return BadRequest("Topic is required");
-        }
-
-        try
-        {
-            var response = await _openRouterService.GenerateQuizQuestionsAsync(
-                request.Topic, 
-                request.Difficulty, 
-                request.NumberOfQuestions, 
-                request.Category, 
-                request.FocusArea);
-            return Ok(response);
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(new { error = ex.Message });
-        }
-    }
-
     [HttpPost("generate-and-save")]
     public async Task<ActionResult<Quiz>> GenerateAndSave(
         [FromBody] GenerateQuizRequest request)
@@ -89,7 +51,7 @@ public class QuizController: ControllerBase
 
         try
         {
-            var aiResponse = await _openRouterService.GenerateQuizQuestionsAsync(
+            var aiResponse = await _createQuizService.GenerateQuizQuestionsAsync(
                 request.Topic, 
                 request.Difficulty, 
                 request.NumberOfQuestions,

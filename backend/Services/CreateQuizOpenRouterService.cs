@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace quiz_ai_app.Services;
 
 
-public class CreateQuizOpenRouterService : ICreateQuiz
+public class CreateQuizOpenRouterService: ICreateQuiz
 {
     private readonly IConfiguration _configuration;
     private readonly ILogger<CreateQuizOpenRouterService> _logger;
@@ -18,9 +18,8 @@ public class CreateQuizOpenRouterService : ICreateQuiz
         _httpClient = httpClient;
     }
 
-    public async Task<string> GenerateQuizQuestionsAsync(string topic, DifficultyLevel difficulty, int numberOfQuestions, string? category = null, string? focusArea = null)
+    public async Task<string> GenerateQuizQuestionsAsync(string topic, DifficultyLevel difficulty, int numberOfQuestions,string language= "English", string? category = null, string? focusArea = null)
     {
-        // Convertir enum a string
         var difficultyString = difficulty.ToString();
         
         var systemPrompt = AiPromptGenerator.GetSystemPrompt(numberOfQuestions);
@@ -30,7 +29,7 @@ public class CreateQuizOpenRouterService : ICreateQuiz
             category: category ?? topic,
             difficulty: difficultyString,
             numberOfQuestions: numberOfQuestions,
-            language: "English",
+            language: language,
             focusArea: focusArea
         );
         
@@ -38,26 +37,26 @@ public class CreateQuizOpenRouterService : ICreateQuiz
         {
             try
             {
-                _logger.LogInformation($"Intentando generar quiz con modelo: {model}");
+                _logger.LogInformation($"Attempting to generate quiz with model: {model}");
                 var result = await TryGenerateWithModelAsync(model, systemPrompt, userPrompt);
                 
                 if (IsValidJsonResponse(result))
                 {
-                    _logger.LogInformation($"Quiz generado exitosamente con modelo: {model}");
+                    _logger.LogInformation($"Quiz successfully generated with model: {model}");
                     return result;
                 }
                 else
                 {
-                    _logger.LogWarning($"Modelo {model} devolvió JSON inválido");
+                    _logger.LogWarning($"Model {model} returned invalid JSON");
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Error con modelo {model}: {ex.Message}");
+                _logger.LogWarning($"Error with model {model}: {ex.Message}");
             }
         }
 
-        throw new InvalidOperationException("No se pudo generar el quiz. Todos los modelos fallaron o devolvieron respuestas inválidas.");
+        throw new InvalidOperationException("Could not generate quiz. All models failed or returned invalid responses.");
     }
 
     private async Task<string> TryGenerateWithModelAsync(string model, string systemPrompt, string userPrompt)
@@ -138,7 +137,7 @@ public class CreateQuizOpenRouterService : ICreateQuiz
         }
         catch (JsonException ex)
         {
-            _logger.LogWarning($"Error al validar JSON: {ex.Message}");
+            _logger.LogWarning($"Error validating JSON: {ex.Message}");
             return false;
         }
     }
