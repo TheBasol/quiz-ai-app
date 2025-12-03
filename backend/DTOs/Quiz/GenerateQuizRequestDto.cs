@@ -2,7 +2,7 @@ using quiz_ai_app.Utils;
 
 namespace quiz_ai_app.DTOs;
 
-public class GenerateQuizRequest
+public class GenerateQuizRequestDto
 {
     public string Topic { get; set; } = string.Empty;
     public DifficultyLevel Difficulty { get; set; } = DifficultyLevel.Medium;

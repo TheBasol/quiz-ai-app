@@ -47,7 +47,7 @@ public static class AiPromptGenerator
     }
 
     
-    public static string GetUserPrompt(string topic, string? category, string difficulty, int numberOfQuestions, string language, string? focusArea = null, string? additionalInstructions = null)
+    public static string GetUserPrompt(string topic, string? category, string difficulty, int numberOfQuestions, string language = "English", string? focusArea = null, string? additionalInstructions = null)
     {
         var sb = new StringBuilder();
         

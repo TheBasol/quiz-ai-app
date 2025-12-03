@@ -1,11 +1,13 @@
 using quiz_ai_app.Utils;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace quiz_ai_app.Entitys;
 
 public class Quiz
 {
     [Key] 
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Required] 

@@ -13,17 +13,6 @@ public class QuizResponseDto
     public List<QuestionDto> Questions { get; set; } = new();
 }
 
-public class QuestionDto
-{
-    public int Id { get; set; }
-    public string Text { get; set; } = string.Empty;
-    public List<OptionDto> Options { get; set; } = new();
-}
 
-public class OptionDto
-{
-    public int Id { get; set; }
-    public string Text { get; set; } = string.Empty;
-    public bool IsCorrect { get; set; }
-}
+
 

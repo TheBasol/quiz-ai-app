@@ -8,6 +8,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 public class Option
 {
     [Key]
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public int Id { get; set; }
 
     [Required]

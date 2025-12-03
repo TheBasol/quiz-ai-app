@@ -7,18 +7,16 @@ namespace quiz_ai_app.Services;
 
 public class CreateQuizOpenRouterService: ICreateQuiz
 {
-    private readonly IConfiguration _configuration;
     private readonly ILogger<CreateQuizOpenRouterService> _logger;
     private readonly HttpClient _httpClient;
 
-    public CreateQuizOpenRouterService(IConfiguration configuration, ILogger<CreateQuizOpenRouterService> logger, HttpClient httpClient)
+    public CreateQuizOpenRouterService(ILogger<CreateQuizOpenRouterService> logger, HttpClient httpClient)
     {
-        _configuration = configuration;
         _logger = logger;
         _httpClient = httpClient;
     }
 
-    public async Task<string> GenerateQuizQuestionsAsync(string topic, DifficultyLevel difficulty, int numberOfQuestions,string language= "English", string? category = null, string? focusArea = null)
+    public async Task<string> GenerateQuizQuestionsAsync(string topic, DifficultyLevel difficulty, int numberOfQuestions, string? language = "English", string? category = null, string? focusArea = null)
     {
         var difficultyString = difficulty.ToString();
         
@@ -32,6 +30,9 @@ public class CreateQuizOpenRouterService: ICreateQuiz
             language: language,
             focusArea: focusArea
         );
+        
+        _logger.LogDebug($"System Prompt: {systemPrompt}");
+        _logger.LogDebug($"User Prompt: {userPrompt}");
         
         foreach (var model in AiModels.AvailableModels)
         {
@@ -61,19 +62,6 @@ public class CreateQuizOpenRouterService: ICreateQuiz
 
     private async Task<string> TryGenerateWithModelAsync(string model, string systemPrompt, string userPrompt)
     {
-        var apiKey = _configuration["OpenRouterApi:ApiKey"];
-        var urlBase = _configuration["OpenRouterApi:UrlBase"];
-
-        if (string.IsNullOrEmpty(apiKey))
-        {
-            throw new InvalidOperationException("OpenRouter API key not configured");
-        }
-
-        if (string.IsNullOrEmpty(urlBase))
-        {
-            throw new InvalidOperationException("OpenRouter UrlBase not configured");
-        }
-        
         var messages = new object[]
         {
             new { role = "system", content = systemPrompt },
@@ -89,12 +77,7 @@ public class CreateQuizOpenRouterService: ICreateQuiz
         var jsonPayload = JsonSerializer.Serialize(payload);
         var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
         
-        _httpClient.DefaultRequestHeaders.Clear();
-        _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
-        _httpClient.DefaultRequestHeaders.Add("HTTP-Referer", "https://localhost");
-        _httpClient.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
-        
-        var response = await _httpClient.PostAsync($"{urlBase}/chat/completions", content);
+        var response = await _httpClient.PostAsync(string.Empty, content);
         
         if (!response.IsSuccessStatusCode)
         {

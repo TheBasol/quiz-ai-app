@@ -13,9 +13,17 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(connectionString)
 );
 
-builder.Services.AddHttpClient();
+var uriBase = builder.Configuration["OpenRouterApi:UrlBase"] ?? throw new InvalidOperationException("OpenRouterApi:UrlBase is not configured");
+var apiKey = builder.Configuration["OpenRouterApi:ApiKey"] ?? throw new InvalidOperationException("OpenRouterApi:ApiKey is not configured");
 
-builder.Services.AddScoped<ICreateQuiz,CreateQuizOpenRouterService>();
+builder.Services.AddScoped<ICreateQuiz, CreateQuizOpenRouterService>();
+builder.Services.AddHttpClient<CreateQuizOpenRouterService>(c =>
+{
+    c.BaseAddress = new Uri(uriBase);
+    c.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+    c.DefaultRequestHeaders.Add("HTTP-Referer", "https://localhost");
+    c.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
+});
 
 // controllers
 builder.Services.AddControllers()

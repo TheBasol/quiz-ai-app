@@ -4,7 +4,6 @@ using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
 using quiz_ai_app.Entitys;
 using quiz_ai_app.Services;
-using quiz_ai_app.Utils;
 using System.Text.Json;
 
 namespace quiz_ai_app.Controller;
@@ -18,8 +17,8 @@ public class QuizController: ControllerBase
     
     public QuizController(ApplicationDbContext context, ICreateQuiz createQuizService)
     {
-        this._context = context;
-        this._createQuizService = createQuizService;
+        _context = context;
+        _createQuizService = createQuizService;
     }
     
     [HttpGet]
@@ -32,7 +31,11 @@ public class QuizController: ControllerBase
     [HttpGet("{id}", Name = "GetById")]
     public async Task<ActionResult<Quiz>> GetById(int id)
     {
-        var quiz = await _context.Quizzes.FindAsync(id);
+        var quiz = await _context.Quizzes
+            .Include(q => q.Questions)
+            .ThenInclude(q => q.Options)
+            .FirstOrDefaultAsync(q => q.Id == id);
+        
         if (quiz == null)
         {
             return NotFound();
@@ -42,7 +45,7 @@ public class QuizController: ControllerBase
 
     [HttpPost("generate-and-save")]
     public async Task<ActionResult<Quiz>> GenerateAndSave(
-        [FromBody] GenerateQuizRequest request)
+        [FromBody] GenerateQuizRequestDto requestDto)
     {
         if (!ModelState.IsValid)
         {
@@ -52,11 +55,11 @@ public class QuizController: ControllerBase
         try
         {
             var aiResponse = await _createQuizService.GenerateQuizQuestionsAsync(
-                request.Topic, 
-                request.Difficulty, 
-                request.NumberOfQuestions,
-                request.Category,
-                request.FocusArea);
+                requestDto.Topic, 
+                requestDto.Difficulty, 
+                requestDto.NumberOfQuestions,
+                requestDto.Category,
+                requestDto.FocusArea);
             
             using var jsonDoc = JsonDocument.Parse(aiResponse);
             var root = jsonDoc.RootElement;
@@ -64,11 +67,11 @@ public class QuizController: ControllerBase
             
             var quiz = new Quiz
             {
-                Name = root.TryGetProperty("name", out var nameElement) ? nameElement.GetString() ?? request.QuizName ?? request.Topic : request.QuizName ?? request.Topic,
-                Description = root.TryGetProperty("description", out var descElement) ? descElement.GetString() ?? $"Generated quiz about {request.Topic}" : $"Generated quiz about {request.Topic}",
-                Category = request.Category ?? request.Topic,
-                Difficulty = request.Difficulty,
-                TimeLimit = TimeSpan.FromMinutes(request.TimeLimit ?? 30),
+                Name = root.TryGetProperty("name", out var nameElement) ? nameElement.GetString() ?? requestDto.QuizName ?? requestDto.Topic : requestDto.QuizName ?? requestDto.Topic,
+                Description = root.TryGetProperty("description", out var descElement) ? descElement.GetString() ?? $"Generated quiz about {requestDto.Topic}" : $"Generated quiz about {requestDto.Topic}",
+                Category = requestDto.Category ?? requestDto.Topic,
+                Difficulty = requestDto.Difficulty,
+                TimeLimit = TimeSpan.FromMinutes(requestDto.TimeLimit ?? 30),
                 Questions = new List<Question>()
             };
             
