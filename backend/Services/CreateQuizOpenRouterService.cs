@@ -85,16 +85,20 @@ public class CreateQuizOpenRouterService: ICreateQuiz
             throw new InvalidOperationException($"OpenRouter API error: {response.StatusCode} - {errorContent}");
         }
 
+
         var responseContent = await response.Content.ReadAsStringAsync();
+        Console.WriteLine($"Respuesta RAW de OpenRouter: {responseContent}");
         
         var jsonResponse = JsonDocument.Parse(responseContent);
         var root = jsonResponse.RootElement;
+        
         
         var messageContent = root
             .GetProperty("choices")[0]
             .GetProperty("message")
             .GetProperty("content")
             .GetString();
+        
 
         return messageContent ?? string.Empty;
     }

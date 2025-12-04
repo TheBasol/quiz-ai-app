@@ -5,6 +5,7 @@ using quiz_ai_app.DTOs;
 using quiz_ai_app.Entitys;
 using quiz_ai_app.Services;
 using System.Text.Json;
+using FluentValidation;
 
 namespace quiz_ai_app.Controller;
 
@@ -14,17 +15,22 @@ public class QuizController: ControllerBase
 {
     private readonly ApplicationDbContext _context;
     private readonly ICreateQuiz _createQuizService;
+    private IValidator<QuizRequestDto> _QuizRequestvalidator;
     
-    public QuizController(ApplicationDbContext context, ICreateQuiz createQuizService)
+    public QuizController(ApplicationDbContext context, ICreateQuiz createQuizService, IValidator<QuizRequestDto> QuizRequestvalidator)
     {
         _context = context;
         _createQuizService = createQuizService;
+        _QuizRequestvalidator = QuizRequestvalidator;
     }
     
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Quiz>>> Get()
     {
-        var quizzes = await _context.Quizzes.ToListAsync();
+        var quizzes = await _context.Quizzes
+            .Include(q => q.Questions)
+            .ThenInclude(q => q.Options)
+            .ToListAsync();
         return Ok(quizzes);
     }
     
@@ -45,11 +51,14 @@ public class QuizController: ControllerBase
 
     [HttpPost("generate-and-save")]
     public async Task<ActionResult<Quiz>> GenerateAndSave(
-        [FromBody] GenerateQuizRequestDto requestDto)
+        [FromBody] QuizRequestDto requestDto)
     {
-        if (!ModelState.IsValid)
+        Console.WriteLine(requestDto.NumberOfQuestions);
+        var validationResult = await _QuizRequestvalidator.ValidateAsync(requestDto);
+
+        if (!validationResult.IsValid)
         {
-            return BadRequest(ModelState);
+            return BadRequest(validationResult.Errors);
         }
 
         try

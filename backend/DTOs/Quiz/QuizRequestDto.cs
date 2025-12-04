@@ -2,9 +2,9 @@ using quiz_ai_app.Utils;
 
 namespace quiz_ai_app.DTOs;
 
-public class GenerateQuizRequestDto
+public class QuizRequestDto
 {
-    public string Topic { get; set; } = string.Empty;
+    public string Topic { get; set; }
     public DifficultyLevel Difficulty { get; set; } = DifficultyLevel.Medium;
     public int NumberOfQuestions { get; set; } = 5;
     public string? QuizName { get; set; }
