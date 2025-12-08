@@ -1,19 +1,21 @@
 using quiz_ai_app.Utils;
-using quiz_ai_app.Settings;
 using System.Text.Json;
 
 namespace quiz_ai_app.Services;
 
 
-public class CreateQuizOpenRouterService: ICreateQuiz
+public class CreateQuizServiceOpenRouterService: ICreateQuizService
 {
-    private readonly ILogger<CreateQuizOpenRouterService> _logger;
+    private readonly ILogger<CreateQuizServiceOpenRouterService> _logger;
+    private readonly IGetAiModelsService _aiModelsService;
     private readonly HttpClient _httpClient;
 
-    public CreateQuizOpenRouterService(ILogger<CreateQuizOpenRouterService> logger, HttpClient httpClient)
+    public CreateQuizServiceOpenRouterService(ILogger<CreateQuizServiceOpenRouterService> logger, HttpClient httpClient,
+        IGetAiModelsService aiModelsService)
     {
         _logger = logger;
         _httpClient = httpClient;
+        _aiModelsService = aiModelsService;
     }
 
     public async Task<string> GenerateQuizQuestionsAsync(string topic, DifficultyLevel difficulty, int numberOfQuestions, string? language = "English", string? category = null, string? focusArea = null)
@@ -27,33 +29,32 @@ public class CreateQuizOpenRouterService: ICreateQuiz
             category: category ?? topic,
             difficulty: difficultyString,
             numberOfQuestions: numberOfQuestions,
-            language: language,
+            language: language ?? "English",
             focusArea: focusArea
         );
         
-        _logger.LogDebug($"System Prompt: {systemPrompt}");
-        _logger.LogDebug($"User Prompt: {userPrompt}");
+        var models = await _aiModelsService.GetModels();
         
-        foreach (var model in AiModels.AvailableModels)
+        foreach (var model in models)
         {
             try
             {
-                _logger.LogInformation($"Attempting to generate quiz with model: {model}");
+                _logger.LogInformation("Attempting to generate quiz with model: {Model}", model);
                 var result = await TryGenerateWithModelAsync(model, systemPrompt, userPrompt);
                 
                 if (IsValidJsonResponse(result))
                 {
-                    _logger.LogInformation($"Quiz successfully generated with model: {model}");
+                    _logger.LogInformation("Quiz successfully generated with model: {Model}", model);
                     return result;
                 }
                 else
                 {
-                    _logger.LogWarning($"Model {model} returned invalid JSON");
+                    _logger.LogWarning("Model {Model} returned invalid JSON", model);
                 }
             }
             catch (Exception ex)
             {
-                _logger.LogWarning($"Error with model {model}: {ex.Message}");
+                _logger.LogWarning("Error with model {Model}: {Message}", model, ex.Message);
             }
         }
 
@@ -70,14 +71,14 @@ public class CreateQuizOpenRouterService: ICreateQuiz
 
         var payload = new
         {
-            model = model,
-            messages = messages
+            model,
+            messages
         };
 
         var jsonPayload = JsonSerializer.Serialize(payload);
         var content = new StringContent(jsonPayload, System.Text.Encoding.UTF8, "application/json");
         
-        var response = await _httpClient.PostAsync(string.Empty, content);
+        var response = await _httpClient.PostAsync("chat/completions", content);
         
         if (!response.IsSuccessStatusCode)
         {
@@ -124,7 +125,7 @@ public class CreateQuizOpenRouterService: ICreateQuiz
         }
         catch (JsonException ex)
         {
-            _logger.LogWarning($"Error validating JSON: {ex.Message}");
+            _logger.LogWarning("Error validating JSON: {Message}", ex.Message);
             return false;
         }
     }

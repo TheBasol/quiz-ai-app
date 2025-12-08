@@ -21,7 +21,7 @@ var apiKey = builder.Configuration["OpenRouterApi:ApiKey"] ?? throw new InvalidO
 
 // dependency injection for services
 
-builder.Services.AddHttpClient<ICreateQuiz,CreateQuizOpenRouterService>(c =>
+builder.Services.AddHttpClient<ICreateQuizService,CreateQuizServiceOpenRouterService>(c =>
 {
     c.BaseAddress = new Uri(uriBase);
     c.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
@@ -29,7 +29,14 @@ builder.Services.AddHttpClient<ICreateQuiz,CreateQuizOpenRouterService>(c =>
     c.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
 });
 
-
+builder.Services.AddHttpClient<IGetAiModelsService, GetAiModelsService>(c =>
+{
+    c.BaseAddress = new Uri(uriBase);
+    c.DefaultRequestHeaders.Add("Authorization", $"Bearer {apiKey}");
+    c.DefaultRequestHeaders.Add("HTTP-Referer", "https://localhost");
+    c.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
+});
+builder.Services.AddScoped<IQuizService, QuizService>();
 
 // Validation
 builder.Services.AddScoped<IValidator<QuizRequestDto>, QuizRequestValidator>();
