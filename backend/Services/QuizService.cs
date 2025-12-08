@@ -8,7 +8,7 @@ using quiz_ai_app.Entitys;
 
 namespace quiz_ai_app.Services;
 
-public class QuizService : IQuizService
+public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
 {
     private ApplicationDbContext _context;
     private ICreateQuizService _createQuizServiceService;

@@ -1,10 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
-using quiz_ai_app.Entitys;
 using quiz_ai_app.Services;
-using System.Text.Json;
 using FluentValidation;
 
 namespace quiz_ai_app.Controller;
@@ -13,13 +9,11 @@ namespace quiz_ai_app.Controller;
 [Route("api/quiz")]
 public class QuizController: ControllerBase
 {
-
-    private IQuizService _quizService;
+    private ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto> _quizService;
     private IValidator<QuizRequestDto> _QuizRequestvalidator;
     
-    public QuizController(ApplicationDbContext context, ICreateQuizService createQuizServiceService, 
-        IValidator<QuizRequestDto> QuizRequestvalidator,
-        IQuizService quizService)
+    public QuizController(IValidator<QuizRequestDto> QuizRequestvalidator, 
+        [FromKeyedServices("QuizService")] ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto> quizService)
     {
         _QuizRequestvalidator = QuizRequestvalidator;
         _quizService = quizService;

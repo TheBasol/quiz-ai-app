@@ -3,14 +3,13 @@ using System.Text.Json;
 
 namespace quiz_ai_app.Services;
 
-
-public class CreateQuizServiceOpenRouterService: ICreateQuizService
+public class CreateQuizOpenRouterService: ICreateQuizService
 {
-    private readonly ILogger<CreateQuizServiceOpenRouterService> _logger;
+    private readonly ILogger<CreateQuizOpenRouterService> _logger;
     private readonly IGetAiModelsService _aiModelsService;
     private readonly HttpClient _httpClient;
 
-    public CreateQuizServiceOpenRouterService(ILogger<CreateQuizServiceOpenRouterService> logger, HttpClient httpClient,
+    public CreateQuizOpenRouterService(ILogger<CreateQuizOpenRouterService> logger, HttpClient httpClient,
         IGetAiModelsService aiModelsService)
     {
         _logger = logger;
