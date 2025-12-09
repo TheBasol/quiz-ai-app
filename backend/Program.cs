@@ -1,6 +1,8 @@
+using System.Text;
 using FluentValidation;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using quiz_ai_app.AutoMappers;
+using Microsoft.IdentityModel.Tokens;
 using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
 using quiz_ai_app.Entitys;
@@ -26,6 +28,35 @@ var apiKey = builder.Configuration["OpenRouterApi:ApiKey"] ?? throw new InvalidO
 builder.Services.AddScoped<IRepository<Quiz>, QuizRepository>();
 
 // dependency injection for services
+
+// identity
+
+var keyJwt = builder.Configuration["JwtSettings:SecretKey"] ?? throw new InvalidOperationException("JwtSettings:SecretKey is not configured");
+
+builder.Services.AddIdentityCore<IdentityUser>()
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<UserManager<IdentityUser>>();
+builder.Services.AddScoped<SignInManager<IdentityUser>>();
+builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddAuthentication().AddJwtBearer(options =>
+{
+    options.MapInboundClaims = false;
+
+    options.TokenValidationParameters = new TokenValidationParameters
+    {
+        ValidateIssuer = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyJwt)),
+        ClockSkew =  TimeSpan.Zero
+    };
+});
+
+//quiz service
 
 builder.Services.AddHttpClient<ICreateQuizService,CreateQuizOpenRouterService>(c =>
 {
