@@ -2,6 +2,8 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
+using quiz_ai_app.Entitys;
+using quiz_ai_app.Repository;
 using quiz_ai_app.Services;
 using quiz_ai_app.Validators;
 
@@ -18,6 +20,9 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 var uriBase = builder.Configuration["OpenRouterApi:UrlBase"] ?? throw new InvalidOperationException("OpenRouterApi:UrlBase is not configured");
 var apiKey = builder.Configuration["OpenRouterApi:ApiKey"] ?? throw new InvalidOperationException("OpenRouterApi:ApiKey is not configured");
+
+// Repository 
+builder.Services.AddScoped<IRepository<Quiz>, QuizRepository>();
 
 // dependency injection for services
 

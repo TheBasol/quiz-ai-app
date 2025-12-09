@@ -1,29 +1,26 @@
-
-
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
-using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
 using quiz_ai_app.Entitys;
+using quiz_ai_app.Repository;
 
 namespace quiz_ai_app.Services;
 
 public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
 {
-    private ApplicationDbContext _context;
+    private IRepository<Quiz> _quizRepository;
     private ICreateQuizService _createQuizServiceService;
     
-    public QuizService(ApplicationDbContext context, ICreateQuizService createQuizServiceService)
+    public QuizService(ICreateQuizService createQuizServiceService, IRepository<Quiz> repository)
     {
-        _context = context;
         _createQuizServiceService = createQuizServiceService;
+        _quizRepository = repository;
     }
-    
-    public async Task<IEnumerable<QuizDto>> GetAll() =>
-         await _context.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.Options)
-            .Select(q => new QuizDto
+
+    public async Task<IEnumerable<QuizDto>> GetAll()
+    {
+        var quiz = await _quizRepository.GetAll();
+        
+        var quizDto = quiz.Select(q => new QuizDto
             {
                 Id = q.Id,
                 Name = q.Name,
@@ -43,15 +40,16 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
                     }).ToList()
                 }).ToList()
             })
-            .ToListAsync();
+            .ToList();
+        
+        return quizDto;
+    }
+
     
 
     public async Task<QuizDto> GetById(int id)
     {
-        var quiz = await _context.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.Options)
-            .FirstOrDefaultAsync(q => q.Id == id);
+        var quiz = await _quizRepository.GetById(id);
 
         if (quiz == null)
         {
@@ -129,8 +127,8 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
             quiz.Questions.Add(question);
         }
             
-        await _context.AddAsync(quiz);
-        await _context.SaveChangesAsync();
+        await _quizRepository.Add(quiz);
+        await _quizRepository.Save();
         
         var quizDto = new QuizDto
         {
@@ -158,10 +156,7 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
 
     public async Task<QuizDto> Update(int id, QuizUpdateDto updateDto)
     {
-        var quiz = await _context.Quizzes
-            .Include(q => q.Questions)
-            .ThenInclude(q => q.Options)
-            .FirstOrDefaultAsync(q => q.Id == id);
+        var quiz = await _quizRepository.GetById(id);
 
         if (quiz == null)
         {
@@ -185,7 +180,8 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
         }).ToList();
         
         
-        await _context.SaveChangesAsync();
+        _quizRepository.Update(quiz);
+        await _quizRepository.Save();
         
         var quizDto = new QuizDto
         {
@@ -213,7 +209,7 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
 
     public async Task<QuizDto> Delete(int id)
     {
-        var quiz = await _context.Quizzes.FindAsync(id);
+        var quiz = await _quizRepository.GetById(id);
 
         if (quiz == null)
         {
@@ -241,8 +237,8 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
             }).ToList()
         };
         
-        _context.Quizzes.Remove(quiz);
-        await _context.SaveChangesAsync();
+        _quizRepository.Delete(quiz);
+        await _quizRepository.Save();
         
         return quizDto;
     }
