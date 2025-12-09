@@ -1,5 +1,6 @@
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
+using quiz_ai_app.AutoMappers;
 using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
 using quiz_ai_app.Entitys;
@@ -42,6 +43,9 @@ builder.Services.AddHttpClient<IGetAiModelsService, GetAiModelsService>(c =>
     c.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
 });
 builder.Services.AddKeyedScoped<ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>, QuizService>("QuizService");
+
+//Mappers
+builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
 // Validation
 builder.Services.AddScoped<IValidator<QuizRequestDto>, QuizRequestValidator>();

@@ -45,7 +45,7 @@ public class QuizController: ControllerBase
         
         var quizDto = await _quizService.Add(requestDto);
         
-        return CreatedAtAction("GetById", new { id = quizDto.Id }, quizDto);
+        return CreatedAtAction("GetById", new { id = quizDto.QuizId }, quizDto);
     }
 
     [HttpPut("{id}")]
