@@ -108,7 +108,7 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
             return null;
         }
         
-        _mapper.Map<QuizUpdateDto,Quiz>(quizUpdateDto, quiz);
+        _mapper.Map(quizUpdateDto, quiz);
         
         _quizRepository.Update(quiz);
         await _quizRepository.Save();
@@ -134,4 +134,5 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
         
         return quizDto;
     }
+    
 }

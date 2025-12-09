@@ -49,6 +49,8 @@ builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);
 
 // Validation
 builder.Services.AddScoped<IValidator<QuizRequestDto>, QuizRequestValidator>();
+builder.Services.AddScoped<IValidator<QuizUpdateDto>, QuizUpdateValidator>();
+
 
 // controllers
 builder.Services.AddControllers()

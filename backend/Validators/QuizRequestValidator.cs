@@ -1,6 +1,5 @@
 using FluentValidation;
 using quiz_ai_app.DTOs;
-using quiz_ai_app.Entitys;
 
 namespace quiz_ai_app.Validators;
 

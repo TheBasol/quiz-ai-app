@@ -10,12 +10,15 @@ namespace quiz_ai_app.Controller;
 public class QuizController: ControllerBase
 {
     private ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto> _quizService;
+    private IValidator<QuizUpdateDto> _QuizUpdatevalidator;
     private IValidator<QuizRequestDto> _QuizRequestvalidator;
     
     public QuizController(IValidator<QuizRequestDto> QuizRequestvalidator, 
-        [FromKeyedServices("QuizService")] ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto> quizService)
+        [FromKeyedServices("QuizService")] ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto> quizService,
+        IValidator<QuizUpdateDto> QuizUpdatevalidator)
     {
         _QuizRequestvalidator = QuizRequestvalidator;
+        _QuizUpdatevalidator = QuizUpdatevalidator;
         _quizService = quizService;
     }
     
@@ -51,7 +54,12 @@ public class QuizController: ControllerBase
     [HttpPut("{id}")]
     public async Task<ActionResult<QuizDto>> Update(int id, QuizUpdateDto requestDto)
     {
-        //validations
+        var validationResult = await _QuizUpdatevalidator.ValidateAsync(requestDto);
+        
+        if (!validationResult.IsValid)
+        {
+            return BadRequest(validationResult.Errors);
+        }
         
         var quizDto = await _quizService.Update(id, requestDto);
         

@@ -1,5 +1,3 @@
-using quiz_ai_app.DTOs;
-
 namespace quiz_ai_app.Services;
 
 public interface ICommonService<T,TI,TU>
