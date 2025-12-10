@@ -18,7 +18,7 @@ Una aplicación moderna y completa de quiz desarrollada con **Next.js 15** (Fron
 ## Características
 
 ### Funcionalidades Principales
-- **Generación AI de Cuestionarios**: Crea quizzes personalizados usando 19+ modelos de IA diferentes
+- **Generación AI de Cuestionarios**: Crea quizzes personalizados usando modelos de IA diferentes
 - **Creación Manual**: Diseña tus propios cuestionarios con un editor intuitivo
 - **Sistema de Temporizador**: Cronómetro configurable con límites de tiempo personalizables
 - **Diseño Responsivo**: Interfaz adaptable para dispositivos móviles y desktop
@@ -29,7 +29,6 @@ Una aplicación moderna y completa de quiz desarrollada con **Next.js 15** (Fron
 - **Persistencia**: Quizzes guardados en base de datos PostgreSQL
 
 ### IA Integrada
-- **19 Modelos de IA**: Sistema de respaldo con múltiples proveedores
 - **Validación Inteligente**: Verificación automática de respuestas generadas
 - **Personalización Avanzada**: 
   - Temas específicos
@@ -177,32 +176,60 @@ npm run dev
 quiz-ai-app/
 ├── frontend/
 │   ├── src/
-│   │   ├── app/                    # App Router de Next.js
-│   │   │   ├── (quiz)/            # Grupo de rutas de quiz
-│   │   │   │   ├── page.tsx       # Página principal
-│   │   │   │   ├── questions/[id]/# Página de preguntas dinámicas
-│   │   │   │   └── results/       # Página de resultados
-│   │   │   ├── api/               # API Routes
-│   │   │   │   └── get-quiz/      # Endpoint de generación AI
-│   │   │   ├── globals.css        # Estilos globales
-│   │   │   └── layout.tsx         # Layout principal
-│   │   ├── components/            # Componentes React
-│   │   │   ├── modal/             # Modales de creación
-│   │   │   ├── quizContent/       # Componentes de quiz
-│   │   │   ├── quizzes/           # Grid y tarjetas de quizzes
-│   │   │   └── results/           # Componentes de resultados
-│   │   ├── config/                # Configuración de IA
-│   │   ├── data/                  # Prompts y datos estáticos
-│   │   ├── hooks/                 # Custom React Hooks
-│   │   ├── interfaces/            # Tipos TypeScript
-│   │   ├── services/              # Servicios de IA
-│   │   ├── store/                 # Estado global (Zustand)
-│   │   └── utils/                 # Utilidades y helpers
-│   ├── public/                    # Archivos estáticos
+│   │   ├── app/                           # App Router de Next.js 16
+│   │   │   ├── (quiz)/                    # Grupo de rutas de quiz
+│   │   │   │   ├── page.tsx              # Página principal
+│   │   │   │   ├── questions/[id]/       # Página de preguntas
+│   │   │   │   └── results/              # Página de resultados
+│   │   │   ├── login/                     # Página de login
+│   │   │   ├── register/                  # Página de registro
+│   │   │   ├── settings/                  # Configuración
+│   │   │   ├── layout.tsx                # Layout principal
+│   │   │   └── globals.css               # Estilos globales
+│   │   ├── components/
+│   │   │   ├── Navbar.tsx
+│   │   │   ├── ProtectedRoute.tsx
+│   │   │   ├── ButtonsAddModal.tsx
+│   │   │   ├── auth/
+│   │   │   │   ├── LoginForm.tsx
+│   │   │   │   └── RegisterForm.tsx
+│   │   │   ├── modal/
+│   │   │   │   ├── ModalAIAddQuiz.tsx
+│   │   │   │   ├── ModalAddQuiz.tsx
+│   │   │   │   ├── ModalContentAdd.tsx
+│   │   │   │   ├── ModalContentAiAdd.tsx
+│   │   │   │   └── GenerationProgress.tsx
+│   │   │   ├── quizzes/
+│   │   │   ├── quizContent/
+│   │   │   ├── results/
+│   │   │   └── icons/
+│   │   ├── config/
+│   │   │   └── config.ts                 # Configuración del backend
+│   │   ├── hooks/
+│   │   │   ├── useAiAddQuizEngine.tsx
+│   │   │   ├── useAddQuizEngine.tsx
+│   │   │   ├── useQuizEngine.tsx
+│   │   │   └── useProtectedRoute.tsx
+│   │   ├── interfaces/
+│   │   │   ├── interface.ts
+│   │   │   ├── auth.ts
+│   │   │   └── index.ts
+│   │   ├── services/
+│   │   │   ├── authService.ts            # Autenticación
+│   │   │   └── backendQuizService.ts     # Operaciones de quiz
+│   │   ├── store/
+│   │   │   └── quiz-store.ts             # Store Zustand
+│   │   ├── utils/
+│   │   ├── data/
+│   │   │   ├── prompts.ts
+│   │   │   └── questions.ts
+│   ├── public/
+│   ├── .env.example
 │   ├── package.json
-│   ├── tailwind.config.js
 │   ├── tsconfig.json
-│   └── README.md
+│   ├── next.config.ts
+│   ├── tailwind.config.mjs
+│   └── postcss.config.mjs
 │
 ├── backend/
 │   ├── AutoMappers/               # Configuración AutoMapper
@@ -349,17 +376,6 @@ docker-compose down
 docker-compose logs -f
 ```
 
-## 🤖 Modelos de IA Soportados
-
-La aplicación utiliza un sistema de respaldo con 19+ modelos de IA:
-
-- **DeepSeek**: deepseek/deepseek-chat
-- **Claude**: anthropic/claude-3.5-sonnet
-- **GPT**: openai/gpt-4o-mini
-- **Llama**: meta-llama/llama-3.1-8b-instruct
-- **Gemini**: google/gemini-pro
-- **Y muchos más...**
-
 ## 🔧 Configuración Avanzada
 
 ### Variables de Entorno
@@ -405,7 +421,7 @@ El backend es una API REST construida con **ASP.NET Core 8** que proporciona la 
 #### Integración con IA
 - **OpenRouter API**: Múltiples modelos de IA con sistema de respaldo
 - **GeneraciónInteligente**: Si un modelo falla, intenta automáticamente con otro
-- **19+ Modelos Soportados**: DeepSeek, Claude, GPT-4, Llama, Gemini, y más
+- **Multiples Modelos Soportados**: DeepSeek, Claude, GPT-4, Llama, Gemini, y más
 
 ### Tecnologías del Backend
 
@@ -652,6 +668,190 @@ dotnet ef migrations add NombreMigracion
 # Actualizar base de datos
 dotnet ef database update
 ```
+
+## 🎨 Frontend - Interface y Experiencia de Usuario
+
+### Descripción General
+El frontend es una aplicación moderna construida con **Next.js 16** y **React 19**, diseñada para proporcionar una interfaz intuitiva y responsive para crear, responder y gestionar quizzes. Utiliza **Tailwind CSS 4** para estilos y **Zustand** para la gestión del estado global.
+
+### Características Principales del Frontend
+
+#### Autenticación
+- Sistema completo de login/registro
+- Almacenamiento de tokens JWT en localStorage
+- Rutas protegidas que requieren autenticación
+- Componente `ProtectedRoute` para proteger rutas
+- Servicio `authService` que maneja credenciales
+
+#### Gestión de Quizzes
+- **Creación Manual:** Editor intuitivo para crear quizzes paso a paso
+- **Creación con IA:** Formulario con múltiples opciones de personalización
+- **Visualización:** Grid responsive de tarjetas de quiz
+- **Ejecución:** Interfaz limpia para responder preguntas
+- **Resultados:** Vista detallada de puntuaciones y respuestas
+
+#### Componentes Principales
+
+##### Componentes de Autenticación
+- `LoginForm.tsx` - Formulario de inicio de sesión
+- `RegisterForm.tsx` - Formulario de registro
+- Validación de credenciales en tiempo real
+
+##### Componentes de Creación
+- `ModalAIAddQuiz.tsx` - Modal para creación con IA
+- `ModalAddQuiz.tsx` - Modal para creación manual
+- `GenerationProgress.tsx` - Indicador de progreso durante generación
+- Formularios con validación completa
+
+##### Componentes de Quiz
+- `QuestionCard.tsx` - Tarjeta de pregunta con opciones
+- `Timer.tsx` - Cronómetro configurable
+- `QuestionCounter.tsx` - Contador de progreso
+- `Navigation.tsx` - Botones siguiente/anterior
+
+##### Componentes de Resultados
+- `ResultCard.tsx` - Resumen de resultados
+- `ScoreDisplay.tsx` - Mostrar puntuación final
+- Estadísticas detalladas por pregunta
+
+#### Hooks Personalizados
+
+##### `useAiAddQuizEngine.tsx`
+Maneja la lógica de creación de quizzes con IA:
+- Gestión de formulario
+- Validación de datos
+- Integración con `backendQuizService`
+- Estados de carga y progreso
+
+##### `useAddQuizEngine.tsx`
+Maneja la creación manual de quizzes:
+- Formularios multi-paso
+- Agregación de preguntas y opciones
+- Validación de estructura
+
+##### `useQuizEngine.tsx`
+Lógica de ejecución de quiz:
+- Navegación entre preguntas
+- Tiempo límite
+- Almacenamiento de respuestas
+- Cálculo de resultados
+
+##### `useProtectedRoute.tsx`
+Protección de rutas basada en autenticación:
+- Verificación de token
+- Redirección a login si es necesario
+
+#### Servicios Frontend
+
+##### `authService.ts`
+- `login(credentials)` - Autenticación con credenciales
+- `register(credentials)` - Registro de nuevo usuario
+- `logout()` - Cerrar sesión
+- `getAuthHeaders()` - Headers con token JWT
+- `isAuthenticated()` - Verificar autenticación
+
+##### `backendQuizService.ts`
+- `createAiQuiz(request)` - Crear quiz con IA
+- `getAllQuizzes()` - Obtener todos los quizzes
+- `getQuizById(id)` - Obtener quiz específico
+- `updateQuiz(id, updates)` - Actualizar quiz
+- `deleteQuiz(id)` - Eliminar quiz
+
+#### Store Zustand (`quiz-store.ts`)
+
+Estado Global:
+```typescript
+interface QuizState {
+  quizzes: Quiz[];
+  user: User | null;
+  isAuthenticated: boolean;
+}
+```
+
+Acciones:
+- `addQuiz(quiz)` - Agregar nuevo quiz
+- `setUser(user)` - Guardar usuario autenticado
+- `setAuthenticated(bool)` - Actualizar estado de auth
+- `logout()` - Limpiar datos de sesión
+- `loadQuizzesFromBackend(quizzes)` - Sincronizar con backend
+
+#### Rutas Disponibles
+
+```
+/ (raíz)              - Página de inicio/quizzes
+/login                - Página de login
+/register             - Página de registro
+/(quiz)               - Grupo de rutas de quiz
+  /                   - Lista de quizzes
+  /questions/[id]     - Ejecutar quiz
+  /results            - Ver resultados
+/settings             - Configuración de usuario
+```
+
+#### Variables de Entorno
+
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:5001
+```
+
+Cambiar en `.env.local` para apuntar a un backend diferente.
+
+#### Interfases TypeScript
+
+##### Quiz
+```typescript
+interface Quiz {
+  id: number;
+  name: string;
+  description?: string;
+  category: string;
+  difficulty: 'Easy' | 'Medium' | 'Hard';
+  questions: Question[];
+  timeLimit: TimeLimit;
+  usersId?: string;
+}
+```
+
+##### Question
+```typescript
+interface Question {
+  id: number;
+  question: string;
+  options: string[];
+  answer: string;
+}
+```
+
+##### User
+```typescript
+interface User {
+  id: string;
+  email: string;
+  username?: string;
+}
+```
+
+#### Estilos y Temas
+
+- **Tailwind CSS 4:** Todos los componentes usan clases utilitarias
+- **Tema Oscuro:** Colores base en escala de grises oscuros (bg-gray-900, etc.)
+- **Colores Dinámicos:** Gradientes y colores por categoría
+- **Responsive Design:** Mobile-first, funciona en todos los dispositivos
+- **Animaciones:** Transiciones suaves con CSS
+
+#### Performance
+
+- **Next.js 16 con Turbopack:** Compilación ultra-rápida
+- **Code Splitting:** Carga automática de componentes bajo demanda
+- **Lazy Loading:** Imágenes y componentes cargados perezosamente
+- **Caché:** Almacenamiento de datos locales cuando es posible
+
+#### SEO
+
+- Metadatos dinámicos con Next.js
+- Open Graph tags para compartir
+- Títulos y descripciones optimizadas
+- Sitemap automático
 
 ##  Deploy
 

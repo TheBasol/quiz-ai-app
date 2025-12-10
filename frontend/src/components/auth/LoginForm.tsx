@@ -49,8 +49,8 @@ export default function LoginForm() {
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
       <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Correo Electrónico
+        <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+          Email Address
         </label>
         <input
           type="email"
@@ -58,15 +58,15 @@ export default function LoginForm() {
           name="email"
           value={formData.email}
           onChange={handleChange}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-          placeholder="tu@email.com"
+          className="w-full rounded-lg border border-gray-600 bg-gray-700 px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors"
+          placeholder="you@email.com"
           disabled={loading}
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Contraseña
+        <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+          Password
         </label>
         <input
           type="password"
@@ -74,14 +74,14 @@ export default function LoginForm() {
           name="password"
           value={formData.password}
           onChange={handleChange}
-          className="mt-1 w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-400 focus:border-blue-500 focus:outline-none focus:ring-blue-500"
+          className="w-full rounded-lg border border-gray-600 bg-gray-700 px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors"
           placeholder="••••••••"
           disabled={loading}
         />
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 p-3 text-sm text-red-700">
+        <div className="rounded-lg bg-red-900 bg-opacity-50 border border-red-700 p-3 text-sm text-red-200">
           {error}
         </div>
       )}
@@ -89,9 +89,9 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white font-medium hover:bg-blue-700 disabled:bg-gray-400 transition-colors"
+        className="w-full rounded-lg bg-purple-600 px-4 py-2 text-white font-medium hover:bg-purple-700 disabled:bg-gray-600 disabled:cursor-not-allowed transition-colors mt-6"
       >
-        {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+        {loading ? 'Signing in...' : 'Sign In'}
       </button>
     </form>
   );

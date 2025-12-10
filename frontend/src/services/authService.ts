@@ -89,6 +89,7 @@ export const authService = {
 
   getUser(): User | null {
     const token = localStorage.getItem('token');
+    console.log('authService getUser token:', localStorage);
     if (!token) return null;
 
     try {
