@@ -17,7 +17,6 @@ public class Quiz
     [MaxLength(500)]
     public string? Description { get; set; } 
 
-
     public TimeSpan TimeLimit { get; set; }
 
     [Required]
@@ -27,4 +26,8 @@ public class Quiz
     public string Category { get; set; }
     
     public virtual List<Question> Questions { get; set; } = new List<Question>();
+    
+    [ForeignKey("User")]
+    public string? UserId { get; set; }
+    public virtual User? User { get; set; }
 }
