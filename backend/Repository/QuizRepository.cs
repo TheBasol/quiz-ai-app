@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.EntityFrameworkCore;
 using quiz_ai_app.Data;
 using quiz_ai_app.Entitys;
@@ -15,6 +16,7 @@ public class QuizRepository: IRepository<Quiz>
 
     public async Task<IEnumerable<Quiz>> GetAll()
     {
+
         var quiz = await _context.Quizzes.Include(q => q.Questions)
             .ThenInclude(q => q.Options)
             .ToListAsync();

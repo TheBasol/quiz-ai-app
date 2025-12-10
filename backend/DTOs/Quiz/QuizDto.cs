@@ -10,9 +10,9 @@ public class QuizDto
     public string Category { get; set; } 
     public DifficultyLevel Difficulty { get; set; }
     public TimeSpan TimeLimit { get; set; }
+    public string? UserId { get; set; }
     public List<QuestionDto> Questions { get; set; } = new();
 }
-
 
 
 

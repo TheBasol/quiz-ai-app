@@ -1,11 +1,7 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using quiz_ai_app.DTOs.User;
-using quiz_ai_app.Entitys;
+using quiz_ai_app.Services;
 
 namespace quiz_ai_app.Controller;
 
@@ -13,40 +9,65 @@ namespace quiz_ai_app.Controller;
 [Route("api/users")]
 public class UsersController: ControllerBase
 {
-    private UserManager<User> _userManager;
+    private IUserService _userService;
     
-    public UsersController(UserManager<User> userManager)
+    public UsersController(IUserService userService)
     {
-        _userManager = userManager;
+        _userService = userService;
     }
     
-    private async Task<UserAuthResponseDto> BuildToken(UserInsertDto credentialsUserDto)
+    [HttpPost("register")]
+    public async Task<ActionResult<UserAuthResponseDto>> Register([FromBody] UserInsertDto credentialsUserDto)
     {
-        var claims = new List<Claim>
-        {
-            new Claim("email", credentialsUserDto.Email),
-            new Claim("username", credentialsUserDto.Username)
-        };
-
-        var user = await _userManager.FindByEmailAsync(credentialsUserDto.Email);
-        var claimsDB = await _userManager.GetClaimsAsync(user!);
+        var userAuthResponseDto = await _userService.Add(credentialsUserDto);
+        return Ok(userAuthResponseDto);
+    }
+    
+    [HttpPost("login")]
+    public async Task<ActionResult<UserAuthResponseDto>> Login([FromBody] UserLoginDto loginDto)
+    {
+        var userAuthResponseDto = await _userService.Login(loginDto);
         
-        claims.AddRange(claimsDB);
-        
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("key_secret_fix_in_serviesUsers"));
-        var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-        
-        var expiration = DateTime.UtcNow.AddYears(1);
-        
-        var securityToken = new JwtSecurityToken(issuer:null, audience: null, claims: claims, 
-            expires: expiration, signingCredentials: credentials);
-        
-        var token = new JwtSecurityTokenHandler().WriteToken(securityToken);
-
-        return new UserAuthResponseDto
-        {
-            Token = token,
-            Expiration = expiration,
-        };
+        return Ok(userAuthResponseDto);
+    }
+    
+    [HttpGet]
+    [Authorize]
+    public ActionResult<IEnumerable<UserDto>> GetAll()
+    {
+        var users = _userService.GetAll();
+        return Ok(users);
+    }
+    
+    [HttpGet("{userId}")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetById(string userId)
+    {
+        var user = await _userService.GetById(userId);
+        return Ok(user);
+    }
+    
+    [HttpGet("{userId}/with-quizzes")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> GetUserWithQuizzes(string userId)
+    {
+        var user = await _userService.GetUserWithQuizzes(userId);
+        return Ok(user);
+    }
+    
+    [HttpPut("{userId}")]
+    [Authorize]
+    public async Task<ActionResult<UserDto>> Update(string userId, [FromBody] UserUpdateDto updateDto)
+    {
+        var user = await _userService.Update(userId, updateDto);
+        return Ok(user);
+    }
+    
+    [HttpDelete("{userId}")]
+    [Authorize]
+    public async Task<ActionResult<bool>> Delete(string userId)
+    {
+        var result = await _userService.Delete(userId);
+        return Ok(result);
     }
 }

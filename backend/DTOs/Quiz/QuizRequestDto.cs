@@ -11,5 +11,6 @@ public class QuizRequestDto
     public string? Category { get; set; }
     public string? FocusArea { get; set; }
     public int? TimeLimit { get; set; }
+    [System.Text.Json.Serialization.JsonIgnore]
+    public string? UserId { get; set; }
 }
-

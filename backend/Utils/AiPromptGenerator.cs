@@ -4,7 +4,6 @@ namespace quiz_ai_app.Utils;
 
 public static class AiPromptGenerator
 {
-    //investigar sobre toon
     public static string GetSystemPrompt(int numberOfQuestions)
     {
         var template = """

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using quiz_ai_app.Data;
 using quiz_ai_app.DTOs;
+using quiz_ai_app.DTOs.User;
 using quiz_ai_app.Entitys;
 using quiz_ai_app.Repository;
 using quiz_ai_app.Services;
@@ -47,8 +48,8 @@ builder.Services.AddAuthentication().AddJwtBearer(options =>
 
     options.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
+        ValidateIssuer = false,
+        ValidateAudience = false,
         ValidateLifetime = true,
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyJwt)),
@@ -73,7 +74,10 @@ builder.Services.AddHttpClient<IGetAiModelsService, GetAiModelsService>(c =>
     c.DefaultRequestHeaders.Add("HTTP-Referer", "https://localhost");
     c.DefaultRequestHeaders.Add("X-Title", "Quiz AI App");
 });
-builder.Services.AddKeyedScoped<ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>, QuizService>("QuizService");
+builder.Services.AddScoped<IQuizService, QuizService>();
+
+//user service
+builder.Services.AddScoped<IUserService, UserService>();
 
 //Mappers
 builder.Services.AddAutoMapper(cfg => { }, typeof(Program).Assembly);

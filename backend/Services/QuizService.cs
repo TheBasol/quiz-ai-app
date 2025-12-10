@@ -6,7 +6,7 @@ using quiz_ai_app.Repository;
 
 namespace quiz_ai_app.Services;
 
-public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
+public class QuizService : IQuizService
 {
     private IRepository<Quiz> _quizRepository;
     private ICreateQuizService _createQuizServiceService;
@@ -90,6 +90,11 @@ public class QuizService : ICommonService<QuizDto,QuizRequestDto,QuizUpdateDto>
         }
         
         var quiz = _mapper.Map<Quiz>(quizInsertDto);
+        
+        if (!string.IsNullOrEmpty(requestDto.UserId))
+        {
+            quiz.UserId = requestDto.UserId;
+        }
             
         await _quizRepository.Add(quiz);
         await _quizRepository.Save();
