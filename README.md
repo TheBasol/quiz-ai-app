@@ -11,8 +11,8 @@ Una aplicación moderna y completa de quiz desarrollada con **Next.js 15** (Fron
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-4-38B2AC?style=flat-square&logo=tailwind-css)
 ![Zustand](https://img.shields.io/badge/Zustand-5.0.8-orange?style=flat-square)
 
-<img width="1878" height="878" alt="Captura de pantalla 2025-10-18 a la(s) 6 53 20 p m" src="https://github.com/user-attachments/assets/d727518f-80ea-4519-88fb-4acd29958312" />
-<img width="1879" height="873" alt="Captura de pantalla 2025-10-18 a la(s) 6 53 41 p m" src="https://github.com/user-attachments/assets/3fa18bca-523c-4ada-b395-23054fe5f1a2" />
+<img width="1878" height="878" alt="Captura de pantalla 2025-10-18 a la(s) 6 53 20 p m" src="https://github.com/user-attachments/assets/d727518f-80ea-4519-88fb-4acd29958312" />
+<img width="1879" height="873" alt="Captura de pantalla 2025-10-18 a la(s) 6 53 41 p m" src="https://github.com/user-attachments/assets/3fa18bca-523c-4ada-b395-23054fe5f1a2" />
 
 
 ## Características
@@ -25,6 +25,8 @@ Una aplicación moderna y completa de quiz desarrollada con **Next.js 15** (Fron
 - **Tema Oscuro**: Diseño moderno con colores dinámicos y gradientes
 - **Gestión de Estado**: Almacenamiento eficiente con Zustand
 - **Navegación Inteligente**: Rutas dinámicas con Next.js App Router
+- **Autenticación**: Sistema de login/registro con JWT tokens
+- **Persistencia**: Quizzes guardados en base de datos PostgreSQL
 
 ### IA Integrada
 - **19 Modelos de IA**: Sistema de respaldo con múltiples proveedores

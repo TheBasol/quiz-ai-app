@@ -15,6 +15,18 @@ var builder = WebApplication.CreateBuilder(args);
 
 // services area
 
+var allowedOrigins = builder.Configuration.GetSection("allowedOrigins").Get<string[]>()!;
+
+builder.Services.AddCors(options =>
+{
+    options.AddDefaultPolicy(optionsCors => 
+    {
+        optionsCors.WithOrigins(allowedOrigins)
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    }); 
+});
+
 // connection to database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 
@@ -99,6 +111,8 @@ builder.Services.AddControllers()
 var app = builder.Build();
 
 // middleware area
+
+app.UseCors();
 
 app.MapControllers();
 

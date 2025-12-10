@@ -1,3 +1,4 @@
+'use client';
 
 import { ButtonsAddModal } from '@/components/ButtonsAddModal';
 import { QuizGrid } from '@/components/quizzes/QuizGrid';
