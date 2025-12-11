@@ -4,6 +4,7 @@ import { QuizCard } from "./QuizCard";
 import { useQuizData } from "@/store/quiz-store";
 import { useQuizActions } from "@/store/quiz-store";
 import { backendQuizService } from '@/services/backendQuizService';
+import { mapBackendQuizToQuiz } from '@/utils/utils';
 import { Quiz } from '@/interfaces';
 
 
@@ -13,26 +14,6 @@ export const QuizGrid = () => {
     const { loadQuizzesFromBackend } = useQuizActions();
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    const mapBackendQuizToQuiz = (backendQuiz: any): Quiz => {
-        return {
-            id: backendQuiz.QuizId,
-            name: backendQuiz.Name,
-            description: backendQuiz.Description,
-            category: backendQuiz.Category,
-            difficulty: backendQuiz.Difficulty as 'Easy' | 'Medium' | 'Hard',
-            timeLimit: {
-                hours: 0,
-                minutes: 30, 
-            },
-            questions: (backendQuiz.Questions || []).map((q: any) => ({
-                id: q.Id,
-                question: q.QuestionText,
-                options: (q.Options || []).map((opt: any) => opt.Text),
-                answer: (q.Options || []).find((opt: any) => opt.IsCorrect)?.Text || '',
-            })),
-        };
-    };
 
     useEffect(() => {
         const fetchQuizzes = async () => {

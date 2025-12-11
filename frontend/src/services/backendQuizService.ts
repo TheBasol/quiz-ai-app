@@ -23,6 +23,9 @@ export interface QuizResponse {
 
 class BackendQuizService {
   async createAiQuiz(request: QuizCreateRequest): Promise<QuizResponse> {
+
+    console.log('Creating AI quiz with request:', request);
+
     try {
       const response = await fetch(`${BACKEND_URL}/api/quiz`, {
         method: 'POST',
@@ -31,6 +34,8 @@ class BackendQuizService {
       });
 
       const data = await response.json();
+
+      console.log('Quiz creation response data:', data);
 
       if (!response.ok) {
         return {

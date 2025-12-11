@@ -1,4 +1,4 @@
-import { Question } from "@/interfaces";
+import { Question, Quiz } from "@/interfaces";
 
 export const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
@@ -66,3 +66,28 @@ export const getResultGradient = (percentage: number) => {
     if (percentage >= 60) return 'from-yellow-600 to-orange-700';
     return 'from-red-600 to-rose-700';
   };
+
+/**
+ * Mapea un quiz del backend (formato PascalCase) al formato de la aplicación (camelCase)
+ * @param backendQuiz - Quiz raw del backend en formato PascalCase
+ * @returns Quiz mapeado al formato interno de la aplicación
+ */
+export const mapBackendQuizToQuiz = (backendQuiz: any): Quiz => {
+  return {
+    id: backendQuiz.QuizId,
+    name: backendQuiz.Name,
+    description: backendQuiz.Description,
+    category: backendQuiz.Category,
+    difficulty: backendQuiz.Difficulty as 'Easy' | 'Medium' | 'Hard',
+    timeLimit: {
+      hours: 0,
+      minutes: 30,
+    },
+    questions: (backendQuiz.Questions || []).map((q: any) => ({
+      id: q.Id,
+      question: q.QuestionText,
+      options: (q.Options || []).map((opt: any) => opt.Text),
+      answer: (q.Options || []).find((opt: any) => opt.IsCorrect)?.Text || '',
+    })),
+  };
+};

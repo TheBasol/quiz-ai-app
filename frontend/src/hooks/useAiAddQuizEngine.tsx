@@ -1,6 +1,7 @@
 import { Quiz, TimeLimit } from "@/interfaces";
 import { useQuizActions } from "@/store/quiz-store";
 import { backendQuizService } from "@/services/backendQuizService";
+import { mapBackendQuizToQuiz } from "@/utils/utils";
 import { useState } from "react";
 import { authService } from "@/services/authService";
 
@@ -34,12 +35,6 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
 
   const languages = [
     'English', 'Spanish'
-  ];
-
-  const focusAreas = [
-    'General Knowledge', 'Beginner Fundamentals', 'Advanced Concepts',
-    'Practical Applications', 'Theory & Principles', 'Current Trends',
-    'Historical Context', 'Problem Solving', 'Case Studies', 'Best Practices'
   ];
 
 
@@ -93,7 +88,6 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
         difficulty: formData.difficulty as 'Easy' | 'Medium' | 'Hard',
         numberOfQuestions: formData.numberOfQuestions,
         language: formData.language,
-        focusArea: formData.focusArea,
         additionalInstructions: formData.additionalInstructions
       });
 
@@ -106,9 +100,10 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
         // Pequeña pausa para mostrar el éxito
         await new Promise(resolve => setTimeout(resolve, 1000));
 
-        // Agregar el quiz con el timeLimit
+        // Mapear el quiz del backend al formato interno y agregar con timeLimit
+        const mappedQuiz = mapBackendQuizToQuiz(result.quiz);
         const quizWithTimeLimit = {
-          ...result.quiz,
+          ...mappedQuiz,
           timeLimit: formData.timeLimit
         };
         addQuiz(quizWithTimeLimit);
@@ -149,7 +144,6 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
     formData,
     categories,
     languages,
-    focusAreas,
     isGenerating,
     generationStep,
     handleInputChange,

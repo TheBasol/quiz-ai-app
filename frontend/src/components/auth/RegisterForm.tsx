@@ -41,7 +41,6 @@ export default function RegisterForm() {
       setError('Please enter a valid email');
       return false;
     }
-
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters');
       return false;
@@ -52,7 +51,7 @@ export default function RegisterForm() {
       return false;
     }
 
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password)) {
+    if (!/[!@#$%^&*]/.test(formData.password)) {
       setError('Password must contain at least one special character (!@#$%^&*)');
       return false;
     }

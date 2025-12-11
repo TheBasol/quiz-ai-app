@@ -9,7 +9,6 @@ interface ModalContentAiAddProps {
   generationStep: string;
   categories: string[];
   languages: string[];
-  focusAreas: string[];
 }
 
 export const ModalContentAiAdd = ({
@@ -19,8 +18,7 @@ export const ModalContentAiAdd = ({
   isGenerating,
   generationStep,
   categories,
-  languages,
-  focusAreas
+  languages
 }: ModalContentAiAddProps) => {
   return (
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-200px)]">
@@ -124,21 +122,6 @@ export const ModalContentAiAdd = ({
                     />
                   </div>
                 </div>
-              </div>
-
-              {/* Focus Area */}
-              <div>
-                <label className="block text-white font-medium mb-2">Focus Area (Optional)</label>
-                <select
-                  value={formData.focusArea}
-                  onChange={(e) => handleInputChange('focusArea', e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
-                >
-                  <option value="">Choose a focus area</option>
-                  {focusAreas.map(area => (
-                    <option key={area} value={area}>{area}</option>
-                  ))}
-                </select>
               </div>
 
               {/* Additional Instructions */}

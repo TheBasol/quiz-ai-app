@@ -43,7 +43,6 @@ export const QuizCard = ({ quizItem }: QuizCardProps) => {
                     {quizItem.questions.length} questions
                   </div>
                   
-
                   <Link href={`/questions/${createSlug(quizItem.name)}-${quizItem.id}`}
                     className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-purple-500/25">
                     Start Quiz
