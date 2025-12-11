@@ -26,7 +26,7 @@ public class UserService : IUserService
     {
         var user = new User
         {
-            UserName = credentialsUserDto.Username,
+            UserName = credentialsUserDto?.Username ?? credentialsUserDto.Email,
             Email = credentialsUserDto.Email
         }; 
         

@@ -19,7 +19,6 @@ export const authService = {
       console.log('authService login response data:', data);
 
       if (response.ok && data.Token) {
-        // Guardar el token y la expiración
         localStorage.setItem('token', data.Token);
         localStorage.setItem('tokenExpiration', data.Expiration);
         
@@ -52,10 +51,13 @@ export const authService = {
         body: JSON.stringify(credentials),
       });
 
+
       const data = await response.json();
 
+      console.log('authService register response data:', data);
+      console.log('authService register response ok:', response.ok);
+
       if (response.ok && data.Token) {
-        // Guardar el token y la expiración
         localStorage.setItem('token', data.Token);
         localStorage.setItem('tokenExpiration', data.Expiration);
         

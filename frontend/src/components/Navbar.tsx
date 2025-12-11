@@ -25,8 +25,7 @@ export default function Navbar() {
       }
       
       setIsLoading(false);
-
-      // Si no está autenticado y está en una ruta protegida, redirige a login
+      
       if (!authenticated && pathname !== '/login' && pathname !== '/register') {
         router.push('/login');
       }
@@ -43,17 +42,14 @@ export default function Navbar() {
     router.push('/login');
   };
 
-  // No mostrar navbar en páginas de autenticación
   if (pathname === '/login' || pathname === '/register') {
     return null;
   }
 
-  // No mostrar si está cargando
   if (isLoading) {
     return null;
   }
 
-  // Si no está autenticado, no mostrar sidebar
   if (!isAuthenticated) {
     return null;
   }

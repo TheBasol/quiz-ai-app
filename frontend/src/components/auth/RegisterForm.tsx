@@ -3,11 +3,11 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
-import { RegisterCredentials } from '@/interfaces/auth';
+import { RegisterCredentials, FormCredentials } from '@/interfaces/auth';
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [formData, setFormData] = useState<RegisterCredentials>({
+  const [formData, setFormData] = useState<FormCredentials>({
     name: '',
     email: '',
     password: '',
@@ -47,6 +47,16 @@ export default function RegisterForm() {
       return false;
     }
 
+    if (!/[A-Z]/.test(formData.password)) {
+      setError('Password must contain at least one uppercase letter');
+      return false;
+    }
+
+    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(formData.password)) {
+      setError('Password must contain at least one special character (!@#$%^&*)');
+      return false;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       setError('Passwords do not match');
       return false;
@@ -65,7 +75,9 @@ export default function RegisterForm() {
       return;
     }
 
-    const response = await authService.register(formData);
+    const response = await authService.register({username: formData.name, email: formData.email, password: formData.password});
+
+    console.log('RegisterForm response:', response);
 
     if (response.success) {
       router.push('/');

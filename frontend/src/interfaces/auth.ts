@@ -19,6 +19,12 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials {
+  username: string;
+  email: string;
+  password: string;
+}
+
+export interface FormCredentials {
   name: string;
   email: string;
   password: string;
