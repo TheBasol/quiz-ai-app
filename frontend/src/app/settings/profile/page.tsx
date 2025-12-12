@@ -32,7 +32,6 @@ export default function ProfilePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí irá la lógica para actualizar el perfil
     setIsEditing(false);
   };
 
@@ -86,7 +85,7 @@ export default function ProfilePage() {
                 type="submit"
                 className="w-full bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
               >
-                Guardar Cambios
+                Save Changes
               </button>
             </form>
           ) : (
@@ -99,13 +98,6 @@ export default function ProfilePage() {
               <div className="bg-gray-700 rounded-lg p-4">
                 <p className="text-gray-400 text-sm">Correo Electrónico</p>
                 <p className="text-white text-lg font-medium">{user?.email || 'No especificado'}</p>
-              </div>
-
-              <div className="bg-gray-700 rounded-lg p-4">
-                <p className="text-gray-400 text-sm">Miembro Desde</p>
-                <p className="text-white text-lg font-medium">
-                  {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'No especificado'}
-                </p>
               </div>
             </div>
           )}

@@ -17,6 +17,7 @@ interface QuizActions {
   getQuizzes: () => Quiz[];
   getQuizById: (id: number) => Quiz | undefined;
   addQuiz: (quiz: Omit<Quiz, 'id'>) => void;
+  updateQuiz: (id: number, updates: Partial<Quiz>) => void;
   setUser: (user: User | null) => void;
   setAuthenticated: (isAuthenticated: boolean) => void;
   logout: () => void;
@@ -55,6 +56,14 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
     });
   },
 
+  updateQuiz: (id: number, updates: Partial<Quiz>) => {
+    set((state) => ({
+      quizzes: state.quizzes.map(quiz =>
+        quiz.id === id ? { ...quiz, ...updates } : quiz
+      ),
+    }));
+  },
+
   setUser: (user: User | null) => {
     set({
       user,
@@ -87,6 +96,7 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
 export const useQuizActions = () => {
   const {
     addQuiz,
+    updateQuiz,
     setUser,
     setAuthenticated,
     logout,
@@ -95,6 +105,7 @@ export const useQuizActions = () => {
 
   return {
     addQuiz,
+    updateQuiz,
     setUser,
     setAuthenticated,
     logout,

@@ -1,16 +1,20 @@
+'use client';
+
 import { Quiz } from "@/interfaces";
 import { createSlug, getDifficultyColor } from "@/utils";
 import Link from "next/link";
+import { useState } from "react";
+import { ModalEditQuiz } from "../modal/ModalEditQuiz";
 
 interface QuizCardProps {
   quizItem: Quiz;
 }
 
 export const QuizCard = ({ quizItem }: QuizCardProps) => {
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     return (
         <>
-            {/* Card Header with Color */}
             <div className="bg-blue-600 h-32 relative overflow-hidden">
               <div className="absolute inset-0 bg-black bg-opacity-30 group-hover:bg-opacity-20 transition-all duration-300"></div>
               <div className="absolute bottom-4 left-4">
@@ -20,7 +24,6 @@ export const QuizCard = ({ quizItem }: QuizCardProps) => {
               </div>
             </div>
 
-            {/* Card Content */}
             <div className="p-6">
                 <div className="flex justify-between items-start mb-3">
                     <h3 className="text-xl font-bold text-white group-hover:text-purple-400 transition-colors duration-200">
@@ -43,12 +46,30 @@ export const QuizCard = ({ quizItem }: QuizCardProps) => {
                     {quizItem.questions.length} questions
                   </div>
                   
-                  <Link href={`/questions/${createSlug(quizItem.name)}-${quizItem.id}`}
-                    className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-purple-500/25">
-                    Start Quiz
-                  </Link>
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => setIsEditModalOpen(true)}
+                      className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-blue-500/25 flex items-center gap-1"
+                    >
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                      Edit
+                    </button>
+                    
+                    <Link href={`/questions/${createSlug(quizItem.name)}-${quizItem.id}`}
+                      className="bg-purple-600 hover:bg-purple-700 text-white text-sm font-medium px-4 py-2 rounded-lg transition-colors duration-200 hover:shadow-lg hover:shadow-purple-500/25">
+                      Start Quiz
+                    </Link>
+                  </div>
                 </div>
-            </div>        
+            </div>
+            
+            <ModalEditQuiz
+              isOpen={isEditModalOpen}
+              onClose={() => setIsEditModalOpen(false)}
+              quiz={quizItem}
+            />
         </>
     );
 }

@@ -1,27 +1,29 @@
 import { Question, Quiz, TimeLimit } from "@/interfaces";
 import { useQuizActions } from "@/store/quiz-store";
+import { backendQuizService } from "@/services/backendQuizService";
 import { useState } from "react";
 
-interface UseAddQuizEngineProps {
+interface UseEditQuizEngineProps {
+  quiz: Quiz;
   onClose: () => void;
 }
 
-export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
-  const { addQuiz } = useQuizActions();
+export const useEditQuizEngine = ({ quiz, onClose }: UseEditQuizEngineProps) => {
+  const { updateQuiz } = useQuizActions();
   
   const [quizData, setQuizData] = useState({
-    name: '',
-    description: '',
-    category: '',
-    difficulty: 'Easy' as Quiz['difficulty'],
-    timeLimit: { hours: 0, minutes: 30 } as TimeLimit,
+    name: quiz.name,
+    description: quiz.description,
+    category: quiz.category,
+    difficulty: quiz.difficulty as Quiz['difficulty'],
+    timeLimit: quiz.timeLimit as TimeLimit,
   });
 
-  const [questions, setQuestions] = useState<Omit<Question, 'id'>[]>([
-    { question: '', options: ['', '', '', ''], answer: '' }
-  ]);
+  const [questions, setQuestions] = useState<Question[]>(quiz.questions);
 
   const [currentStep, setCurrentStep] = useState(1);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   const handleQuizDataChange = (field: string, value: string | Quiz['difficulty']) => {
     setQuizData(prev => ({ ...prev, [field]: value }));
@@ -55,7 +57,7 @@ export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
   };
 
   const addQuestion = () => {
-    setQuestions(prev => [...prev, { question: '', options: ['', '', '', ''], answer: '' }]);
+    setQuestions(prev => [...prev, { id: Date.now(), question: '', options: ['', '', '', ''], answer: '' }]);
   };
 
   const removeQuestion = (index: number) => {
@@ -67,13 +69,13 @@ export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
   const handleClose = () => {
     // Reset form
     setQuizData({
-      name: '',
-      description: '',
-      category: '',
-      difficulty: 'Easy',
-      timeLimit: { hours: 0, minutes: 30 },
+      name: quiz.name,
+      description: quiz.description,
+      category: quiz.category,
+      difficulty: quiz.difficulty,
+      timeLimit: quiz.timeLimit,
     });
-    setQuestions([{ question: '', options: ['', '', '', ''], answer: '' }]);
+    setQuestions(quiz.questions);
     setCurrentStep(1);
     onClose();
   };
@@ -81,27 +83,40 @@ export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
   const handleSave = () => {
     // Basic validation
     if (!quizData.name.trim() || !quizData.description.trim() || !quizData.category.trim()) {
-      alert('Please fill in all quiz information fields');
+      setSaveError('Please fill in all quiz information fields');
       return;
     }
 
     if (questions.some(q => !q.question.trim() || q.options.some(opt => !opt.trim()) || !q.answer.trim())) {
-      alert('Please fill in all question fields');
+      setSaveError('Please fill in all question fields');
       return;
     }
     
-    const questionsWithIds = questions.map((question, index) => ({
-      ...question,
-      id: Date.now() + index 
-    }));
-    
-    const newQuiz: Omit<Quiz, 'id'> = {
+    setIsSaving(true);
+    setSaveError(null);
+
+    const updatedQuiz: Quiz = {
+      ...quiz,
       ...quizData,
-      questions: questionsWithIds
+      questions
     };
 
-    addQuiz(newQuiz); 
-    handleClose();
+    // Guardar en backend
+    backendQuizService.updateQuizFull(quiz.id, updatedQuiz).then((response) => {
+      if (response.success) {
+        // Actualizar en el store local
+        updateQuiz(quiz.id, updatedQuiz);
+        setIsSaving(false);
+        handleClose();
+      } else {
+        setSaveError(response.error || 'Failed to save quiz');
+        setIsSaving(false);
+      }
+    }).catch((error) => {
+      console.error('Error saving quiz:', error);
+      setSaveError('Error saving quiz to database');
+      setIsSaving(false);
+    });
   };    
 
 
@@ -109,6 +124,8 @@ export const useAddQuizEngine = ({ onClose }: UseAddQuizEngineProps) => {
     quizData,
     questions,
     currentStep,
+    isSaving,
+    saveError,
     handleQuizDataChange,
     handleTimeLimitChange,
     handleQuestionChange,

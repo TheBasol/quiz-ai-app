@@ -24,19 +24,19 @@ export const authService = {
         
         return {
           success: true,
-          message: 'Login exitoso',
+          message: 'Login successful',
           email: credentials.email,
         };
       } else {
         return {
           success: false,
-          message: data.message || 'Error al iniciar sesión',
+          message: data.message || 'Login failed',
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Error de conexión',
+        message: error instanceof Error ? error.message : 'Connection error',
       };
     }
   },
@@ -63,19 +63,19 @@ export const authService = {
         
         return {
           success: true,
-          message: 'Registro exitoso',
+          message: 'Registration successful',
           email: credentials.email,
         };
       } else {
         return {
           success: false,
-          message: data.message || 'Error al registrar',
+          message: data.message || 'Registration failed',
         };
       }
     } catch (error) {
       return {
         success: false,
-        message: error instanceof Error ? error.message : 'Error de conexión',
+        message: error instanceof Error ? error.message : 'Connection error',
       };
     }
   },

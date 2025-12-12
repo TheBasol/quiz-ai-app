@@ -68,7 +68,7 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
       'Finalizing your quiz...'
     ];
 
-    // Mostrar pasos de simulación mientras esperamos la respuesta real
+    // Show simulation steps while waiting for the actual response
     let stepIndex = 0;
     const stepInterval = setInterval(() => {
       if (stepIndex < steps.length) {
@@ -114,7 +114,7 @@ export const useAiAddQuizEngine = ({ onClose }: UseAiAddQuizEngineProps) => {
         setIsGenerating(false);
       }
     } catch (error) {
-      // Detener la simulación de pasos en caso de error
+      // Stop simulation steps in case of error
       clearInterval(stepInterval);
       
       console.error('Error generating quiz:', error);

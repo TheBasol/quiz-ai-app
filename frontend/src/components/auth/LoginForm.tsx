@@ -28,9 +28,9 @@ export default function LoginForm() {
     setLoading(true);
     setError('');
 
-    // Validación básica
+    // Basic validation
     if (!formData.email || !formData.password) {
-      setError('Por favor completa todos los campos');
+      setError('Please fill in all fields');
       setLoading(false);
       return;
     }
@@ -40,7 +40,7 @@ export default function LoginForm() {
     if (response.success) {
       router.push('/');
     } else {
-      setError(response.message || 'Error al iniciar sesión');
+      setError(response.message || 'Login failed');
     }
 
     setLoading(false);

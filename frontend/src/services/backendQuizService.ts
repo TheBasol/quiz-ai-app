@@ -23,9 +23,6 @@ export interface QuizResponse {
 
 class BackendQuizService {
   async createAiQuiz(request: QuizCreateRequest): Promise<QuizResponse> {
-
-    console.log('Creating AI quiz with request:', request);
-
     try {
       const response = await fetch(`${BACKEND_URL}/api/quiz`, {
         method: 'POST',
@@ -34,8 +31,6 @@ class BackendQuizService {
       });
 
       const data = await response.json();
-
-      console.log('Quiz creation response data:', data);
 
       if (!response.ok) {
         return {
@@ -117,16 +112,32 @@ class BackendQuizService {
     }
   }
 
-
-  async updateQuiz(
-    id: number,
-    updates: Partial<QuizCreateRequest>
-  ): Promise<QuizResponse> {
+  async updateQuizFull(id: number, quiz: Quiz): Promise<QuizResponse> {
     try {
+      // Convertir timeLimit a formato HH:mm:ss para el backend
+      const hours = String(quiz.timeLimit.hours).padStart(2, '0');
+      const minutes = String(quiz.timeLimit.minutes).padStart(2, '0');
+      const timeLimitString = `${hours}:${minutes}:00`;
+
+      const requestDto = {
+        Name: quiz.name,
+        Description: quiz.description,
+        Category: quiz.category,
+        Difficulty: quiz.difficulty,
+        TimeLimit: timeLimitString,
+        Questions: quiz.questions.map(q => ({
+          QuestionText: q.question,
+          Options: q.options.map(opt => ({
+            Text: opt,
+            IsCorrect: opt === q.answer
+          }))
+        }))
+      };
+
       const response = await fetch(`${BACKEND_URL}/api/quiz/${id}`, {
         method: 'PUT',
         headers: authService.getAuthHeaders(),
-        body: JSON.stringify(updates),
+        body: JSON.stringify(requestDto),
       });
 
       const data = await response.json();
@@ -172,37 +183,6 @@ class BackendQuizService {
       };
     } catch (error) {
       console.error('Quiz deletion error:', error);
-      return {
-        success: false,
-        error: 'Failed to connect to backend',
-      };
-    }
-  }
-
-
-  async generateAiQuiz(request: QuizCreateRequest): Promise<QuizResponse> {
-    try {
-      const response = await fetch(`${BACKEND_URL}/api/quiz/generate-ai`, {
-        method: 'POST',
-        headers: authService.getAuthHeaders(),
-        body: JSON.stringify(request),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        return {
-          success: false,
-          error: data.error || 'Failed to generate quiz',
-        };
-      }
-
-      return {
-        success: true,
-        quiz: data,
-      };
-    } catch (error) {
-      console.error('AI quiz generation error:', error);
       return {
         success: false,
         error: 'Failed to connect to backend',

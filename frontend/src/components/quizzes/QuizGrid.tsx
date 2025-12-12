@@ -5,7 +5,6 @@ import { useQuizData } from "@/store/quiz-store";
 import { useQuizActions } from "@/store/quiz-store";
 import { backendQuizService } from '@/services/backendQuizService';
 import { mapBackendQuizToQuiz } from '@/utils/utils';
-import { Quiz } from '@/interfaces';
 
 
 export const QuizGrid = () => {
@@ -28,10 +27,10 @@ export const QuizGrid = () => {
                     const mappedQuizzes = response.quizzes.map(mapBackendQuizToQuiz);
                     loadQuizzesFromBackend(mappedQuizzes);
                 } else {
-                    setError(response.error || 'Error al cargar los quizzes');
+                    setError(response.error || 'Failed to load quizzes');
                 }
             } catch (err) {
-                setError('Error al conectar con el servidor');
+                setError('Failed to connect to server');
                 console.error('Error fetching quizzes:', err);
             } finally {
                 setIsLoading(false);
@@ -46,7 +45,7 @@ export const QuizGrid = () => {
             <div className="flex justify-center items-center py-12">
                 <div className="text-center">
                     <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-                    <p className="mt-4 text-gray-300">Cargando quizzes...</p>
+                    <p className="mt-4 text-gray-300">Loading quizzes...</p>
                 </div>
             </div>
         );
@@ -63,8 +62,8 @@ export const QuizGrid = () => {
     if (quizzes.length === 0) {
         return (
             <div className="text-center py-12">
-                <p className="text-gray-400 text-lg">No hay quizzes disponibles</p>
-                <p className="text-gray-500 text-sm mt-2">Crea uno nuevo para comenzar</p>
+                <p className="text-gray-400 text-lg">No quizzes available</p>
+                <p className="text-gray-500 text-sm mt-2">Create a new one to get started</p>
             </div>
         );
     }

@@ -11,7 +11,6 @@ export default function PreferencesPage() {
   });
 
   useEffect(() => {
-    // Cargar preferencias guardadas
     const saved = localStorage.getItem('userPreferences');
     if (saved) {
       setPreferences(JSON.parse(saved));
@@ -41,53 +40,6 @@ export default function PreferencesPage() {
           <h1 className="text-3xl font-bold text-white mb-8">Preferencias</h1>
 
           <div className="space-y-6">
-            {/* Notificaciones */}
-            <div className="bg-gray-700 rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">
-                    Notificaciones
-                  </h3>
-                  <p className="text-gray-400 text-sm mt-1">
-                    Recibe notificaciones sobre nuevos quizzes
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="notifications"
-                    checked={preferences.notifications}
-                    onChange={handleChange}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                </label>
-              </div>
-            </div>
-
-            {/* Modo Oscuro */}
-            <div className="bg-gray-700 rounded-lg p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-white">
-                    Modo Oscuro
-                  </h3>
-                  <p className="text-gray-400 text-sm mt-1">
-                    Usar tema oscuro en toda la aplicación
-                  </p>
-                </div>
-                <label className="relative inline-flex items-center cursor-pointer">
-                  <input
-                    type="checkbox"
-                    name="darkMode"
-                    checked={preferences.darkMode}
-                    onChange={handleChange}
-                    className="sr-only peer"
-                  />
-                  <div className="w-11 h-6 bg-gray-600 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-purple-800 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-purple-600"></div>
-                </label>
-              </div>
-            </div>
 
             {/* Idioma */}
             <div className="bg-gray-700 rounded-lg p-6">
@@ -128,7 +80,7 @@ export default function PreferencesPage() {
 
             <div className="bg-blue-900 bg-opacity-50 border border-blue-700 rounded-lg p-4 mt-6">
               <p className="text-blue-200 text-sm">
-                ✓ Los cambios se guardan automáticamente
+                ✓ Changes are saved automatically
               </p>
             </div>
           </div>
