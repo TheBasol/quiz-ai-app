@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { authService } from '@/services/authService';
-import { RegisterCredentials, FormCredentials } from '@/interfaces/auth';
+import { FormCredentials } from '@/interfaces/auth';
 
 export default function RegisterForm() {
   const router = useRouter();
